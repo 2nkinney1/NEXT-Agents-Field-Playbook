@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/ergo-next-design-system-019dcfd7-4838-70c6-a592-2f290c5c2525/tokens.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <script src="_ds/ergo-next-design-system-019dcfd7-4838-70c6-a592-2f290c5c2525/_ds_bundle.js"></script>
+  <style>
+    html, body { margin: 0; background: var(--en-canvas); }
+    @keyframes pbpop { from { transform: translateY(12px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+    *::-webkit-scrollbar { width: 8px; height: 8px; }
+    *::-webkit-scrollbar-thumb { background: var(--en-border); border-radius: 4px; }
+  </style>
+  <script src="seed-data.js"></script>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--en-canvas);font-family:var(--en-font-sans);color:var(--en-text);">
+
+  <header style="background:#fff;border-bottom:1px solid var(--en-divider);position:sticky;top:0;z-index:30;">
+    <div style="max-width:1240px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <img src="assets/logo/ergo-next-mre-horizontal-red.svg" alt="ERGO NEXT" style="height:30px;width:auto;display:block;">
+        <span style="width:1px;height:32px;background:var(--en-divider);"></span>
+        <div style="display:flex;flex-direction:column;line-height:1.15;">
+          <span style="font-weight:700;font-size:18px;color:var(--en-text);">{{ brandName }}</span>
+          <span style="font-size:12px;color:var(--en-text-subtle);letter-spacing:.02em;">{{ brandTagline }}</span>
+        </div>
+      </div>
+      <a href="Manage Content.dc.html" class="en-btn en-btn--tertiary en-btn--sm" style="text-decoration:none;"><i class="ti ti-adjustments-horizontal"></i> Manage content</a>
+    </div>
+    <nav style="max-width:1240px;margin:0 auto;padding:0 32px;width:100%;">
+      <div style="display:flex;gap:32px;flex-wrap:wrap;">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <button onClick="{{ t.onClick }}" style="{{ t.style }}"><i class="ti {{ t.icon }}" aria-hidden="true" style="font-size:18px;line-height:1;"></i>{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </nav>
+  </header>
+
+  <sc-if value="{{ bannerOn }}" hint-placeholder-val="{{ false }}">
+    <div style="background:{{ banner.bg }};border-bottom:1px solid {{ banner.border }};">
+      <div style="max-width:1240px;margin:0 auto;width:100%;padding:11px 32px;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
+        <i class="ti {{ banner.icon }}" style="font-size:19px;line-height:1;color:{{ banner.accent }};flex:0 0 auto;"></i>
+        <span style="font-size:14px;line-height:1.45;color:var(--en-text);font-weight:500;text-wrap:pretty;">{{ banner.text }}</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <main style="max-width:1240px;margin:0 auto;width:100%;padding:32px;flex:1;box-sizing:border-box;">
+
+    <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:120px 0;text-align:center;color:var(--en-text-subtle);">Loading playbook…</div>
+    </sc-if>
+
+    <!-- ════ COB GRID ════ -->
+    <sc-if value="{{ showCobGrid }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="margin-bottom:28px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--en-burgundy);margin:0 0 6px;">{{ cobHdr.eyebrow }}</p>
+          <h1 style="font-size:32px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;">{{ cobHdr.headline }}</h1>
+          <p style="color:var(--en-text-muted);max-width:64ch;font-size:16px;line-height:1.5;margin:0;">{{ cobHdr.blurb }}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;">
+          <sc-for list="{{ cobCards }}" as="c" hint-placeholder-count="16">
+            <button onClick="{{ c.onOpen }}" style="text-align:left;background:#fff;border:1.5px solid var(--en-divider);border-radius:15px;padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:14px;font-family:inherit;transition:border-color .2s,box-shadow .2s,transform .12s;" style-hover="border-color:transparent;box-shadow:var(--en-shadow-2);transform:translateY(-2px);">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <span style="width:46px;height:46px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;background:{{ c.bg }};"><i class="ti {{ c.icon }}" style="font-size:24px;line-height:1;color:{{ c.accent }};"></i></span>
+                <div style="min-width:0;">
+                  <div style="font-weight:700;font-size:16px;line-height:1.25;color:var(--en-text);text-wrap:pretty;">{{ c.title }}</div>
+                  <div style="font-size:11.5px;color:var(--en-text-subtle);margin-top:2px;">{{ c.metaLine }}</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ c.typeTags }}" as="tt" hint-placeholder-count="3">
+                  <span style="font-size:11px;padding:3px 8px;border-radius:5px;background:var(--en-canvas);color:var(--en-text-muted);white-space:nowrap;">{{ tt }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:16px;padding-top:14px;border-top:1px solid var(--en-divider);margin-top:auto;">
+                <sc-for list="{{ c.tierCounts }}" as="tc" hint-placeholder-count="3">
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--en-text-muted);"><span style="width:8px;height:8px;border-radius:50%;background:{{ tc.dot }};"></span>{{ tc.text }}</span>
+                </sc-for>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ════ COB DETAIL ════ -->
+    <sc-if value="{{ showCobDetail }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <button onClick="{{ detail.onBack }}" class="en-back" style="margin-bottom:16px;margin-left:-4px;"><i class="ti ti-arrow-left" style="font-size:20px;"></i> All classes of business</button>
+        <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:32px;flex-wrap:wrap;">
+          <span style="width:64px;height:64px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;background:{{ detail.bg }};"><i class="ti {{ detail.icon }}" style="font-size:32px;line-height:1;color:{{ detail.accent }};"></i></span>
+          <div style="flex:1;min-width:240px;">
+            <h1 style="font-size:36px;font-weight:700;margin:2px 0 12px;letter-spacing:-.01em;line-height:1.1;">{{ detail.title }}</h1>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+              <sc-for list="{{ detail.typeTags }}" as="tt" hint-placeholder-count="3">
+                <span style="font-size:12px;padding:4px 10px;border-radius:5px;background:#fff;border:1px solid var(--en-divider);color:var(--en-text-muted);">{{ tt }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <sc-for list="{{ detail.tiers }}" as="tier" hint-placeholder-count="3">
+          <div style="margin-bottom:32px;">
+            <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+              <span class="en-tag {{ tier.tagClass }}" style="height:auto;">{{ tier.label }}</span>
+              <span style="font-size:14px;color:var(--en-text-subtle);">{{ tier.sub }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <sc-for list="{{ tier.coverages }}" as="cov" hint-placeholder-count="4">
+                <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;overflow:hidden;">
+                  <button onClick="{{ cov.onToggle }}" style="width:100%;text-align:left;background:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:16px;padding:16px 20px;">
+                    <span style="flex:1;min-width:0;">
+                      <span style="display:block;font-weight:700;font-size:16px;color:var(--en-text);">{{ cov.name }}</span>
+                      <sc-if value="{{ cov.closed }}" hint-placeholder-val="{{ true }}">
+                        <span style="display:block;font-size:14px;color:var(--en-text-subtle);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ cov.desc }}</span>
+                      </sc-if>
+                    </span>
+                    <i class="ti ti-chevron-down" style="{{ cov.chevStyle }}"></i>
+                  </button>
+                  <sc-if value="{{ cov.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:0 20px 20px;">
+                      <p style="font-size:16px;line-height:1.5;color:var(--en-text);margin:0 0 14px;">{{ cov.desc }}</p>
+                      <div style="display:flex;gap:10px;padding:10px 0;font-size:14px;line-height:1.45;border-top:1px solid var(--en-divider);"><i class="ti ti-eye" style="font-size:16px;color:var(--en-amber);flex-shrink:0;margin-top:2px;"></i><div><b>Spot the need: </b>{{ cov.signal }}</div></div>
+                      <div style="display:flex;gap:10px;padding:10px 0;font-size:14px;line-height:1.45;border-top:1px solid var(--en-divider);color:var(--en-text-muted);"><i class="ti ti-clock" style="font-size:16px;color:var(--en-text-subtle);flex-shrink:0;margin-top:2px;"></i><div><b>When: </b>{{ cov.when }}</div></div>
+                      <div style="display:flex;gap:10px;padding:10px 0;font-size:14px;line-height:1.45;border-top:1px solid var(--en-divider);color:var(--en-teal);"><i class="ti ti-arrows-exchange" style="font-size:16px;color:var(--en-teal);flex-shrink:0;margin-top:2px;"></i><div>{{ cov.cross }}</div></div>
+                      <sc-if value="{{ cov.hasClaim }}" hint-placeholder-val="{{ false }}">
+                        <div style="margin-top:14px;background:var(--en-rose-50);border:1px solid rgba(142,0,56,.14);border-radius:10px;padding:14px 16px;">
+                          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><i class="ti ti-message-2-heart" style="font-size:16px;color:var(--en-burgundy);"></i><span style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--en-burgundy);">Claims example</span></div>
+                          <p style="font-size:14px;line-height:1.55;color:var(--en-text);margin:0;text-wrap:pretty;">{{ cov.claim }}</p>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ════ VERTICAL DECK ════ -->
+    <sc-if value="{{ showVertical }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="margin-bottom:28px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--en-burgundy);margin:0 0 6px;">{{ vHdr.eyebrow }}</p>
+          <h1 style="font-size:32px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;">{{ vHdr.headline }}</h1>
+          <p style="color:var(--en-text-muted);max-width:64ch;font-size:16px;line-height:1.5;margin:0;">{{ vHdr.blurb }}</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{ vChips }}" as="ch" hint-placeholder-count="6">
+              <button onClick="{{ ch.onClick }}" style="{{ ch.style }}">{{ ch.label }} <span style="font-size:11px;opacity:.7;font-variant-numeric:tabular-nums;">{{ ch.n }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;background:#fff;border:1px solid var(--en-border);border-radius:100px;width:240px;box-sizing:border-box;">
+            <i class="ti ti-search" style="font-size:16px;color:var(--en-text-subtle);"></i>
+            <input value="{{ vSearch }}" onChange="{{ onVSearch }}" placeholder="Search industries…" style="flex:1;border:0;outline:none;background:none;font-family:inherit;font-size:14px;color:var(--en-text);min-width:0;">
+          </div>
+        </div>
+        <sc-if value="{{ vEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:80px 0;color:var(--en-text-subtle);"><i class="ti ti-mood-empty" style="font-size:28px;color:var(--en-text-faint);"></i><p style="margin-top:10px;font-size:16px;">Nothing matches this filter.</p></div>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:16px;">
+          <sc-for list="{{ vCards }}" as="c" hint-placeholder-count="6">
+            <div onClick="{{ c.onFlip }}" style="height:308px;perspective:1400px;cursor:pointer;">
+              <div style="{{ c.innerStyle }}">
+                <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:15px;border:1px solid var(--en-divider);background:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:24px;box-sizing:border-box;">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--en-rose-50);display:grid;place-items:center;"><i class="ti {{ c.icon }}" style="font-size:20px;color:var(--en-burgundy);"></i></div>
+                  </div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:8px 0;">
+                    <div style="font-size:20px;font-weight:700;color:var(--en-text);line-height:1.2;letter-spacing:-.01em;">{{ c.title }}</div>
+                    <div style="font-size:14px;color:var(--en-text-muted);margin-top:6px;line-height:1.4;">{{ c.tagline }}</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:stretch;gap:10px;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700;color:var(--en-text);background:{{ c.catBg }};"><span style="width:7px;height:7px;border-radius:50%;background:{{ c.catDot }};"></span>{{ c.category }}</span>
+                    <div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:var(--en-text-subtle);font-weight:500;">{{ c.gapCount }}</span><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--en-burgundy);font-weight:700;">Reveal <i class="ti ti-arrow-right" style="font-size:13px;"></i></span></div>
+                  </div>
+                </div>
+                <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:15px;border:1px solid var(--en-divider);background:var(--en-paper);transform:rotateY(180deg);padding:16px 20px;display:flex;flex-direction:column;box-sizing:border-box;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--en-divider);">
+                    <span style="font-size:14px;font-weight:700;color:var(--en-text);line-height:1.25;">{{ c.title }}</span>
+                    <span style="font-size:10px;color:var(--en-text-faint);font-style:italic;white-space:nowrap;">flip back</span>
+                  </div>
+                  <div style="flex:1;overflow-y:auto;padding-right:4px;">
+                    <sc-for list="{{ c.products }}" as="p" hint-placeholder-count="4">
+                      <div style="padding:8px 0;border-bottom:1px solid var(--en-divider);">
+                        <div style="font-size:14px;font-weight:700;color:var(--en-text);">{{ p.name }}</div>
+                        <div style="font-size:11px;color:var(--en-text-muted);margin-top:2px;line-height:1.45;">{{ p.why }}</div>
+                        <div style="font-size:11px;color:var(--en-teal);font-style:italic;margin-top:3px;line-height:1.45;">“{{ p.pivot }}”</div>
+                        <div style="display:flex;gap:5px;margin-top:4px;"><span style="font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--en-burgundy);flex:0 0 auto;line-height:1.5;">Listen for</span><span style="font-size:10.5px;color:var(--en-text-muted);line-height:1.4;">{{ p.listen }}</span></div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ════ OBJECTION DECK ════ -->
+    <sc-if value="{{ showObjection }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="margin-bottom:28px;">
+          <p style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--en-burgundy);margin:0 0 6px;">{{ oHdr.eyebrow }}</p>
+          <h1 style="font-size:32px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;">{{ oHdr.headline }}</h1>
+          <p style="color:var(--en-text-muted);max-width:64ch;font-size:16px;line-height:1.5;margin:0;">{{ oHdr.blurb }}</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{ oChips }}" as="ch" hint-placeholder-count="6">
+              <button onClick="{{ ch.onClick }}" style="{{ ch.style }}">{{ ch.label }} <span style="font-size:11px;opacity:.7;font-variant-numeric:tabular-nums;">{{ ch.n }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 14px;background:#fff;border:1px solid var(--en-border);border-radius:100px;width:240px;box-sizing:border-box;">
+            <i class="ti ti-search" style="font-size:16px;color:var(--en-text-subtle);"></i>
+            <input value="{{ oSearch }}" onChange="{{ onOSearch }}" placeholder="Search objections…" style="flex:1;border:0;outline:none;background:none;font-family:inherit;font-size:14px;color:var(--en-text);min-width:0;">
+          </div>
+        </div>
+        <sc-if value="{{ oEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:80px 0;color:var(--en-text-subtle);"><i class="ti ti-mood-empty" style="font-size:28px;color:var(--en-text-faint);"></i><p style="margin-top:10px;font-size:16px;">Nothing matches this filter.</p></div>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:16px;">
+          <sc-for list="{{ oCards }}" as="c" hint-placeholder-count="6">
+            <div onClick="{{ c.onFlip }}" style="height:308px;perspective:1400px;cursor:pointer;">
+              <div style="{{ c.innerStyle }}">
+                <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:15px;border:1px solid var(--en-divider);background:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:24px;box-sizing:border-box;">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:var(--en-rose-50);display:grid;place-items:center;"><i class="ti {{ c.icon }}" style="font-size:20px;color:var(--en-burgundy);"></i></div>
+                  </div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:8px 0;">
+                    <div style="font-size:18px;font-weight:700;color:var(--en-text);line-height:1.32;letter-spacing:-.01em;text-wrap:pretty;">“{{ c.title }}”</div>
+                  </div>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700;color:var(--en-text);background:{{ c.catBg }};"><span style="width:7px;height:7px;border-radius:50%;background:{{ c.catDot }};"></span>{{ c.category }}</span>
+                    <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--en-burgundy);font-weight:700;">Tap to handle <i class="ti ti-arrow-right" style="font-size:13px;"></i></span>
+                  </div>
+                </div>
+                <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:15px;border:1px solid var(--en-divider);background:var(--en-paper);transform:rotateY(180deg);padding:16px 20px;display:flex;flex-direction:column;box-sizing:border-box;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--en-divider);">
+                    <span style="font-size:14px;font-weight:700;color:var(--en-text);line-height:1.25;">“{{ c.title }}”</span>
+                    <span style="font-size:10px;color:var(--en-text-faint);font-style:italic;white-space:nowrap;">flip back</span>
+                  </div>
+                  <div style="flex:1;overflow-y:auto;padding-right:4px;">
+                    <div style="margin-bottom:11px;"><div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--en-text-subtle);margin-bottom:3px;">What's really going on</div><div style="font-size:12px;color:var(--en-text);line-height:1.5;">{{ c.root }}</div></div>
+                    <div style="margin-bottom:11px;"><div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--en-text-subtle);margin-bottom:3px;">Validate &amp; reframe</div><div style="font-size:12px;color:var(--en-text);line-height:1.5;">{{ c.reframe }}</div></div>
+                    <div><div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--en-teal);margin-bottom:3px;">The bridge</div><div style="font-size:12px;color:var(--en-teal);line-height:1.5;font-style:italic;">{{ c.bridge }}</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ════ RESOURCES ════ -->
+    <sc-if value="{{ showResources }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:36px;">
+        <div>
+          <p style="font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--en-burgundy);margin:0 0 6px;">{{ resHdr.eyebrow }}</p>
+          <h1 style="font-size:32px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;">{{ resHdr.headline }}</h1>
+          <p style="color:var(--en-text-muted);max-width:64ch;font-size:16px;line-height:1.5;margin:0;">{{ resHdr.blurb }}</p>
+        </div>
+        <section>
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Guides &amp; documents</h2>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+            <sc-for list="{{ resDocs }}" as="d" hint-placeholder-count="5">
+              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;"><span style="width:44px;height:44px;border-radius:10px;background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ d.icon }}" style="font-size:22px;"></i></span><div style="font-weight:700;font-size:16px;color:var(--en-text);line-height:1.3;">{{ d.title }}</div></div>
+                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.45;margin:0;flex:1;">{{ d.subtitle }}</p>
+                <a href="{{ d.link }}" target="_blank" rel="noopener noreferrer" class="en-btn en-btn--secondary en-btn--sm" style="align-self:flex-start;text-decoration:none;"><i class="ti ti-external-link"></i> Open</a>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        <section>
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Quick-reference cheat sheets</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;">
+            <sc-for list="{{ resSheets }}" as="s" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="width:36px;height:36px;border-radius:8px;background:var(--en-paper);border:1px solid var(--en-divider);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ s.icon }}" style="font-size:18px;"></i></span><div style="font-weight:700;font-size:16px;color:var(--en-text);">{{ s.title }}</div></div>
+                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.6;margin:0;">{{ s.body }}</p>
+                <sc-if value="{{ s.hasLink }}" hint-placeholder-val="{{ false }}">
+                  <a href="{{ s.link }}" target="_blank" rel="noopener noreferrer" class="en-btn en-btn--secondary en-btn--sm" style="text-decoration:none;margin-top:14px;"><i class="ti ti-external-link"></i> Open</a>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+        <section>
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Contacts &amp; escalation</h2>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
+            <sc-for list="{{ resContacts }}" as="c" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:12px;"><span style="width:44px;height:44px;border-radius:50%;background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ c.icon }}" style="font-size:22px;"></i></span><div><div style="font-weight:700;font-size:16px;color:var(--en-text);line-height:1.2;">{{ c.title }}</div><div style="font-size:12px;color:var(--en-text-subtle);">{{ c.subtitle }}</div></div></div>
+                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.45;margin:0;">{{ c.body }}</p>
+                <div style="margin-top:6px;font-weight:700;font-size:14px;color:var(--en-burgundy);font-family:var(--en-font-mono);">{{ c.link }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </sc-if>
+
+  </main>
+
+  <!-- ════ SECTION NOTICE POP-UP ════ -->
+  <sc-if value="{{ noticeOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ notice.onScrim }}" style="position:fixed;inset:0;background:rgba(40,20,28,.4);display:flex;align-items:flex-start;justify-content:center;padding:80px 20px;z-index:90;backdrop-filter:blur(2px);">
+      <div style="background:#fff;border-radius:15px;width:100%;max-width:460px;box-shadow:var(--en-shadow-3);border-top:5px solid {{ notice.accent }};overflow:hidden;animation:pbpop .26s var(--en-ease);">
+        <div style="padding:26px 28px 8px;display:flex;gap:16px;align-items:flex-start;">
+          <span style="width:46px;height:46px;border-radius:50%;background:{{ notice.bg }};color:{{ notice.accent }};display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ notice.icon }}" style="font-size:24px;"></i></span>
+          <div style="flex:1;min-width:0;padding-top:2px;">
+            <h3 style="font-size:19px;font-weight:700;margin:0 0 7px;line-height:1.25;text-wrap:pretty;">{{ notice.title }}</h3>
+            <p style="font-size:14px;color:var(--en-text-muted);line-height:1.55;margin:0;text-wrap:pretty;">{{ notice.body }}</p>
+          </div>
+        </div>
+        <div style="padding:18px 28px 22px;display:flex;justify-content:flex-end;">
+          <button onClick="{{ notice.onDismiss }}" class="en-btn en-btn--primary en-btn--sm">Got it</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  fileRef = React.createRef();
+
+  ICON_OPTS = ["ti-currency-dollar","ti-tag","ti-arrows-left-right","ti-clock","ti-mail","ti-calendar","ti-users","ti-shield-check","ti-help-circle","ti-phone-off","ti-package","ti-building-store","ti-hammer","ti-tools-kitchen-2","ti-sparkles","ti-leaf","ti-device-laptop","ti-truck","ti-scissors","ti-home-heart","ti-home","ti-barbell","ti-briefcase","ti-heart-handshake","ti-message-circle","ti-shield-half","ti-stethoscope","ti-code","ti-tools","ti-building-cog","ti-bed","ti-folder","ti-file","ti-map-2","ti-receipt","ti-headset","ti-list-search","ti-target-arrow","ti-file-certificate","ti-stack-2","ti-messages","ti-arrows-shuffle","ti-urgent","ti-file-pencil","ti-scale","ti-external-link"].map((v) => ({ value: v, label: v.replace("ti-", "") }));
+
+  state = {
+    ready: false, data: null,
+    tab: "cob", cobDetail: null, openCov: {},
+    vFilter: "All", vSearch: "", oFilter: "All", oSearch: "",
+    flipped: null, noticeTab: null,
+    manageDeck: "cob", gate: false, gateValue: "", gateError: false,
+    editor: null, confirm: null,
+  };
+
+  componentDidMount() { this._tryLoad(); }
+
+  _tryLoad() {
+    const S = window.__PB_SEED;
+    if (!S) { requestAnimationFrame(() => this._tryLoad()); return; }
+    this.SEED = S;
+    let data = null;
+    try {
+      const raw = localStorage.getItem(S.STORE_KEY);
+      if (raw) { const p = JSON.parse(raw); if (p && p.cob && p.objections && p.verticals && p.resources) data = p; }
+    } catch (e) {}
+    if (!data) data = S.buildSeed();
+    data = S.ensureSections(data);
+    const sec0 = data.sections.find((x) => x.id === this.state.tab);
+    const noticeTab = sec0 && sec0.notice && sec0.notice.on ? this.state.tab : null;
+    this.setState({ data, ready: true, noticeTab });
+  }
+
+  _save(data) { try { localStorage.setItem(this.SEED.STORE_KEY, JSON.stringify(data)); } catch (e) {} }
+  _commit(data) { this._save(data); this.setState({ data }); }
+
+  setTab(id) {
+    const sec = this.state.data && this.state.data.sections.find((x) => x.id === id);
+    const noticeTab = sec && sec.notice && sec.notice.on ? id : null;
+    this.setState({ tab: id, flipped: null, cobDetail: null, noticeTab });
+  }
+
+  /* ── editor draft mutation ── */
+  _edDraft(mut) {
+    this.setState((s) => {
+      const d = JSON.parse(JSON.stringify(s.editor.draft));
+      mut(d);
+      return { editor: { ...s.editor, draft: d } };
+    });
+  }
+  _blank(kind) {
+    const uid = this.SEED.uid;
+    if (kind === "objection") return { id: uid("obj"), deck: "objection", title: "", icon: "ti-message-circle", category: "Price", root: "", reframe: "", bridge: "" };
+    if (kind === "vertical") return { id: uid("ver"), deck: "vertical", title: "", icon: "ti-briefcase", category: "Workers' Comp", tagline: "", products: [{ id: uid("p"), name: "", why: "", pivot: "", listen: "" }] };
+    if (kind === "resource") return { id: uid("res"), type: "doc", icon: "ti-file", title: "", subtitle: "", body: "", link: "#" };
+    return { id: uid("cob"), icon: "ti-briefcase", accent: "#8e0038", bg: "var(--en-rose-50)", title: "", types: ["New type"], policies: { must: [], rec: [], opt: [] } };
+  }
+  _openEdit(kind, item) { this.setState({ editor: { kind, isNew: false, draft: JSON.parse(JSON.stringify(item)) } }); }
+  _openAdd(kind) { this.setState({ editor: { kind, isNew: true, draft: this._blank(kind) } }); }
+
+  _saveEditor() {
+    const e = this.state.editor; if (!e) return;
+    const d = e.draft;
+    if (!d.title || !d.title.trim()) return;
+    const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob" };
+    const key = map[e.kind];
+    const data = { ...this.state.data };
+    const arr = [...data[key]];
+    const idx = arr.findIndex((x) => x.id === d.id);
+    if (idx >= 0) arr[idx] = d; else arr.push(d);
+    data[key] = arr;
+    this._save(data);
+    this.setState({ data, editor: null });
+  }
+
+  _move(key, i, dir) {
+    const arr = [...this.state.data[key]];
+    const j = i + dir; if (j < 0 || j >= arr.length) return;
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    this._commit({ ...this.state.data, [key]: arr });
+  }
+
+  _doDelete() {
+    const c = this.state.confirm;
+    const data = { ...this.state.data };
+    data[c.key] = data[c.key].filter((x) => x.id !== c.id);
+    this._save(data);
+    this.setState({ data, confirm: null, editor: c.fromEditor ? null : this.state.editor });
+  }
+  _doReset() { const data = this.SEED.buildSeed(); this._save(data); this.setState({ data, confirm: null }); }
+
+  _export() {
+    const blob = new Blob([JSON.stringify(this.state.data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "cob-field-playbook-content.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+  _importFile(ev) {
+    const f = ev.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const p = JSON.parse(r.result);
+        if (p && p.cob && p.objections && p.verticals && p.resources) { this._save(p); this.setState({ data: p }); }
+        else alert("That file doesn't look like a Playbook export.");
+      } catch (err) { alert("Couldn't read that file — is it valid JSON?"); }
+    };
+    r.readAsText(f);
+    ev.target.value = "";
+  }
+
+  renderVals() {
+    const st = this.state;
+    const lock = this.props.lockManage !== false;
+    const code = this.props.accessCode || "000000";
+
+    const secSource = (st.data && st.data.sections) || (this.SEED && this.SEED.SECTIONS) || [];
+    const TABDEF = secSource.map((s) => ({ id: s.id, label: s.label, icon: s.icon }));
+    const tabBase = "position:relative;display:inline-flex;align-items:center;gap:8px;padding:14px 2px;background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;font-size:16px;transition:color .2s;";
+    const tabs = TABDEF.map((t) => ({
+      ...t,
+      onClick: () => this.setTab(t.id),
+      style: tabBase + (st.tab === t.id ? "color:var(--en-burgundy);font-weight:700;border-bottom-color:var(--en-burgundy);" : "color:var(--en-text-muted);font-weight:400;"),
+    }));
+
+    if (!st.ready || !st.data) {
+      return { notReady: true, tabs, brandName: "Field Playbook", brandTagline: "Agent sales enablement", bannerOn: false, banner: { text: "", bg: "transparent", border: "transparent", accent: "var(--en-burgundy)", icon: "ti-info-circle" }, showCobGrid: false, showCobDetail: false, showVertical: false, showObjection: false, showResources: false, showManageGate: false, showManage: false, editorOpen: false, confirmOpen: false, noticeOpen: false };
+    }
+
+    const SEED = this.SEED;
+    const TMETA = SEED.TIER_META, ORDER = SEED.TIER_ORDER, TINT = SEED.CAT_TINT;
+    const TOV = (st.data.settings && st.data.settings.tiers) || {};
+    const TIER = {};
+    ORDER.forEach((k) => { const o = TOV[k] || {}; TIER[k] = { ...TMETA[k], label: o.label || TMETA[k].label, sub: o.sub || TMETA[k].sub }; });
+    const tab = st.tab;
+
+    const showCobGrid = tab === "cob" && !st.cobDetail;
+    const showCobDetail = tab === "cob" && !!st.cobDetail;
+    const showVertical = tab === "vertical";
+    const showObjection = tab === "objection";
+    const showResources = tab === "resources";
+    const showManageGate = tab === "manage" && lock && !st.gate;
+    const showManage = tab === "manage" && (!lock || st.gate);
+
+    /* section headers (eyebrow / headline / blurb) + per-tab pop-up notice */
+    const secMap = {};
+    st.data.sections.forEach((s) => { secMap[s.id] = s; });
+    const hdr = (id) => { const s = secMap[id] || {}; return { eyebrow: s.eyebrow || "", headline: s.headline || "", blurb: s.blurb || "" }; };
+    const cobHdr = hdr("cob"), vHdr = hdr("vertical"), oHdr = hdr("objection"), resHdr = hdr("resources");
+
+    const noticeSec = secMap[tab];
+    const noticeOpen = st.noticeTab === tab && !!noticeSec && !!noticeSec.notice && !!noticeSec.notice.on;
+    let notice = null;
+    if (noticeOpen) {
+      const TON = SEED.NOTICE_TONES[noticeSec.notice.tone] || SEED.NOTICE_TONES.info;
+      notice = {
+        title: noticeSec.notice.title || noticeSec.label, body: noticeSec.notice.body,
+        icon: TON.icon, accent: TON.accent, bg: TON.bg,
+        onDismiss: () => this.setState({ noticeTab: null }),
+        onScrim: (ev) => { if (ev.target === ev.currentTarget) this.setState({ noticeTab: null }); },
+      };
+    }
+
+    /* persistent banner (global, shown on every tab under the nav) */
+    const SET = st.data.settings || {};
+    const bn = SET.banner || {};
+    const BTONE = SEED.NOTICE_TONES[bn.tone] || SEED.NOTICE_TONES.info;
+    const bannerOn = !!bn.on && !!(bn.text && bn.text.trim());
+    const bannerObj = { text: bn.text || "", bg: BTONE.bg, border: "var(--en-divider)", accent: BTONE.accent, icon: BTONE.icon };
+
+    /* COB grid */
+    const cobCards = st.data.cob.map((c) => {
+      const total = ORDER.reduce((s, k) => s + (c.policies[k] || []).length, 0);
+      const tags = c.types.slice(0, 3);
+      if (c.types.length > 3) tags.push("+" + (c.types.length - 3));
+      return {
+        id: c.id, title: c.title, icon: c.icon, accent: c.accent, bg: c.bg,
+        metaLine: total + " coverages · " + c.types.length + " business types",
+        typeTags: tags,
+        tierCounts: ORDER.map((k) => ({ dot: TIER[k].dot, text: (c.policies[k] || []).length + " " + TIER[k].label.toLowerCase() })),
+        onOpen: () => this.setState({ cobDetail: c.id, openCov: {} }),
+      };
+    });
+
+    /* COB detail */
+    let detail = null;
+    if (showCobDetail) {
+      const c = st.data.cob.find((x) => x.id === st.cobDetail);
+      if (c) {
+        detail = {
+          title: c.title, icon: c.icon, accent: c.accent, bg: c.bg, typeTags: c.types,
+          onBack: () => this.setState({ cobDetail: null }),
+          tiers: ORDER.map((k) => {
+            const tm = TIER[k];
+            return {
+              key: k, label: tm.label, sub: tm.sub, tagClass: tm.tagClass,
+              coverages: (c.policies[k] || []).map((p, i) => {
+                const ck = k + "::" + i;
+                const open = !!st.openCov[ck];
+                return {
+                  id: p.id, name: p.name, desc: p.desc, signal: p.signal, when: p.when, cross: p.cross,
+                  claim: p.claim, hasClaim: !!(p.claim && p.claim.trim()),
+                  open, closed: !open,
+                  chevStyle: "font-size:18px;color:var(--en-text-subtle);transition:transform .2s;" + (open ? "transform:rotate(180deg);" : ""),
+                  onToggle: () => this.setState((s) => ({ openCov: { ...s.openCov, [ck]: !s.openCov[ck] } })),
+                };
+              }),
+            };
+          }),
+        };
+      }
+    }
+
+    /* decks */
+    const chipBase = "display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .12s;";
+    const chipActive = "background:var(--en-burgundy);border:1px solid var(--en-burgundy);color:#fff;";
+    const chipIdle = "background:#fff;border:1px solid var(--en-border);color:var(--en-text-muted);";
+    const buildDeck = (kind) => {
+      const cats = kind === "objection" ? SEED.OBJECTION_CATS : SEED.VERTICAL_CATS;
+      const arr = kind === "objection" ? st.data.objections : st.data.verticals;
+      const filter = kind === "objection" ? st.oFilter : st.vFilter;
+      const search = kind === "objection" ? st.oSearch : st.vSearch;
+      const counts = { All: arr.length };
+      cats.forEach((c) => (counts[c] = arr.filter((x) => x.category === c).length));
+      const chipDefs = [{ label: "All", cat: "All", n: counts.All }].concat(cats.map((c) => ({ label: c, cat: c, n: counts[c] })));
+      const chips = chipDefs.map((ch) => ({
+        label: ch.label, n: ch.n,
+        style: chipBase + (filter === ch.cat ? chipActive : chipIdle),
+        onClick: () => this.setState(kind === "objection" ? { oFilter: ch.cat } : { vFilter: ch.cat }),
+      }));
+      const term = search.trim().toLowerCase();
+      const filtered = arr.filter((c) => {
+        const okCat = filter === "All" || c.category === filter;
+        const hay = (c.title + " " + (c.tagline || "") + " " + c.category).toLowerCase();
+        return okCat && (!term || hay.includes(term));
+      });
+      const cards = filtered.map((c) => {
+        const t = TINT[c.category] || { bg: "var(--en-divider)", dot: "var(--en-text-subtle)" };
+        const flipped = st.flipped === c.id;
+        const base = {
+          id: c.id, icon: c.icon, title: c.title, category: c.category, catBg: t.bg, catDot: t.dot,
+          innerStyle: "position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s var(--en-ease);" + (flipped ? "transform:rotateY(180deg);" : ""),
+          onFlip: () => this.setState((s) => ({ flipped: s.flipped === c.id ? null : c.id })),
+        };
+        if (kind === "objection") return { ...base, root: c.root, reframe: c.reframe, bridge: c.bridge };
+        return { ...base, tagline: c.tagline, gapCount: (c.products || []).length + " cross-sell gaps", products: c.products || [] };
+      });
+      return { chips, cards, empty: filtered.length === 0 };
+    };
+    const vDeck = buildDeck("vertical");
+    const oDeck = buildDeck("objection");
+
+    /* resources */
+    const res = st.data.resources;
+
+    /* manage */
+    const segBase = "display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border:0;cursor:pointer;border-radius:100px;font-family:inherit;font-size:14px;font-weight:700;transition:all .12s;";
+    const segOn = "background:#fff;color:var(--en-burgundy);box-shadow:var(--en-shadow-1);";
+    const segOff = "background:transparent;color:var(--en-text-muted);";
+    const md = st.manageDeck;
+    const segDefs = [
+      { id: "cob", label: "COB classes", icon: "ti-shield-half", n: st.data.cob.length },
+      { id: "vertical", label: "Verticals", icon: "ti-building-store", n: st.data.verticals.length },
+      { id: "objection", label: "Objections", icon: "ti-messages", n: st.data.objections.length },
+      { id: "resource", label: "Resources", icon: "ti-folder", n: st.data.resources.length },
+    ];
+    const manageSegs = segDefs.map((s) => ({ ...s, style: segBase + (md === s.id ? segOn : segOff), onClick: () => this.setState({ manageDeck: s.id }) }));
+    const dmap = { cob: "cob", vertical: "verticals", objection: "objections", resource: "resources" };
+    const key = dmap[md];
+    const list = st.data[key];
+    const addLabel = { cob: "Add class", vertical: "Add vertical", objection: "Add objection", resource: "Add resource" }[md];
+    const colTitle = { cob: "Class", vertical: "Industry", objection: "Objection", resource: "Resource" }[md];
+    const colSub = { cob: "Coverages", vertical: "Category", objection: "Category", resource: "Type" }[md];
+    const typeLabels = { doc: "Document / link", sheet: "Cheat sheet", contact: "Contact" };
+    const manageRows = list.map((it, i) => {
+      let title, sub;
+      if (md === "cob") { const total = ORDER.reduce((s, k) => s + (it.policies[k] || []).length, 0); title = it.title; sub = total + " coverages · " + it.types.length + " types"; }
+      else if (md === "vertical") { title = it.title; sub = it.category; }
+      else if (md === "objection") { title = "“" + it.title + "”"; sub = it.category; }
+      else { title = it.title; sub = typeLabels[it.type] || it.type; }
+      return {
+        id: it.id, idx: i + 1, icon: it.icon || "ti-file", title, sub,
+        onUp: () => this._move(key, i, -1), onDown: () => this._move(key, i, 1),
+        onEdit: () => this._openEdit(md, it),
+        onDelete: () => this.setState({ confirm: { kind: "delete", key, id: it.id } }),
+      };
+    });
+
+    /* editor */
+    let ed = null;
+    const editorOpen = !!st.editor;
+    if (st.editor) {
+      const e = st.editor, d = e.draft;
+      const setF = (f, v) => this._edDraft((dd) => { dd[f] = v; });
+      const titles = { objection: "Objection card", vertical: "Vertical-risk card", resource: "Resource", cob: "COB class" };
+      const titlesLower = { objection: "objection card", vertical: "vertical-risk card", resource: "resource", cob: "COB class" };
+      ed = {
+        isObjection: e.kind === "objection", isVertical: e.kind === "vertical", isResource: e.kind === "resource", isCob: e.kind === "cob",
+        eyebrow: titles[e.kind], title: (e.isNew ? "Add " : "Edit ") + titlesLower[e.kind],
+        showDelete: !e.isNew, saveLabel: e.isNew ? "Add" : "Save changes",
+        title2: d.title, onTitle: (ev) => setF("title", ev.target.value),
+        icon: d.icon, onIcon: (ev) => setF("icon", ev.target.value), iconOptions: this.ICON_OPTS,
+      };
+      if (e.kind === "objection" || e.kind === "vertical") {
+        ed.category = d.category;
+        ed.onCategory = (ev) => setF("category", ev.target.value);
+        ed.catOptions = e.kind === "objection" ? SEED.OBJECTION_CATS : SEED.VERTICAL_CATS;
+      }
+      if (e.kind === "objection") {
+        ed.root = d.root; ed.onRoot = (ev) => setF("root", ev.target.value);
+        ed.reframe = d.reframe; ed.onReframe = (ev) => setF("reframe", ev.target.value);
+        ed.bridge = d.bridge; ed.onBridge = (ev) => setF("bridge", ev.target.value);
+      }
+      if (e.kind === "vertical") {
+        ed.tagline = d.tagline; ed.onTagline = (ev) => setF("tagline", ev.target.value);
+        ed.gapsLabel = "Cross-sell gaps (" + d.products.length + ")";
+        ed.onAddProduct = () => this._edDraft((dd) => dd.products.push({ id: SEED.uid("p"), name: "", why: "", pivot: "", listen: "" }));
+        ed.products = d.products.map((p, i) => ({
+          num: i + 1, name: p.name, why: p.why, pivot: p.pivot,
+          onName: (ev) => this._edDraft((dd) => { dd.products[i].name = ev.target.value; }),
+          onWhy: (ev) => this._edDraft((dd) => { dd.products[i].why = ev.target.value; }),
+          onPivot: (ev) => this._edDraft((dd) => { dd.products[i].pivot = ev.target.value; }),
+          onUp: () => this._edDraft((dd) => { const j = i - 1; if (j < 0) return; const t = dd.products[i]; dd.products[i] = dd.products[j]; dd.products[j] = t; }),
+          onDown: () => this._edDraft((dd) => { const j = i + 1; if (j >= dd.products.length) return; const t = dd.products[i]; dd.products[i] = dd.products[j]; dd.products[j] = t; }),
+          onRemove: () => this._edDraft((dd) => { if (dd.products.length > 1) dd.products.splice(i, 1); }),
+        }));
+      }
+      if (e.kind === "resource") {
+        ed.resType = d.type; ed.onResType = (ev) => setF("type", ev.target.value);
+        ed.typeOptions = [{ value: "doc", label: "Document / link" }, { value: "sheet", label: "Cheat sheet" }, { value: "contact", label: "Contact" }];
+        ed.subtitle = d.subtitle; ed.onSubtitle = (ev) => setF("subtitle", ev.target.value);
+        ed.body = d.body; ed.onBody = (ev) => setF("body", ev.target.value);
+        ed.link = d.link; ed.onLink = (ev) => setF("link", ev.target.value);
+        ed.resSubLabel = d.type === "contact" ? "Role" : "Description";
+        ed.resBodyLabel = d.type === "sheet" ? "Sheet body" : (d.type === "contact" ? "When to reach them" : "Notes (optional)");
+        ed.resLinkLabel = d.type === "contact" ? "Contact / channel" : "Link URL";
+      }
+      if (e.kind === "cob") {
+        ed.types = d.types.map((t, i) => ({
+          value: t, width: Math.max(70, t.length * 7.5) + "px",
+          onChange: (ev) => this._edDraft((dd) => { dd.types[i] = ev.target.value; }),
+          onRemove: () => this._edDraft((dd) => { dd.types.splice(i, 1); }),
+        }));
+        ed.onAddType = () => this._edDraft((dd) => dd.types.push("New type"));
+        ed.cobTiers = ORDER.map((k) => {
+          const tm = TIER[k], pols = d.policies[k] || [];
+          return {
+            key: k, label: tm.label, labelLower: tm.label.toLowerCase(), tagClass: tm.tagClass,
+            countText: pols.length + " coverage" + (pols.length === 1 ? "" : "s"),
+            onAdd: () => this._edDraft((dd) => dd.policies[k].push({ id: SEED.uid("cov"), name: "", desc: "", signal: "", when: "", cross: "", claim: "" })),
+            coverages: pols.map((p, i) => ({
+              name: p.name, desc: p.desc, signal: p.signal, when: p.when, cross: p.cross,
+              onName: (ev) => this._edDraft((dd) => { dd.policies[k][i].name = ev.target.value; }),
+              onDesc: (ev) => this._edDraft((dd) => { dd.policies[k][i].desc = ev.target.value; }),
+              onSignal: (ev) => this._edDraft((dd) => { dd.policies[k][i].signal = ev.target.value; }),
+              onWhen: (ev) => this._edDraft((dd) => { dd.policies[k][i].when = ev.target.value; }),
+              onCross: (ev) => this._edDraft((dd) => { dd.policies[k][i].cross = ev.target.value; }),
+              onDelete: () => this._edDraft((dd) => { dd.policies[k].splice(i, 1); }),
+            })),
+          };
+        });
+      }
+    }
+
+    /* confirm */
+    let conf = null;
+    const confirmOpen = !!st.confirm;
+    if (st.confirm) {
+      if (st.confirm.kind === "delete") conf = { title: "Delete this item?", body: "It will be removed from the playbook. This can’t be undone unless you re-import a backup.", label: "Delete", onConfirm: () => this._doDelete(), onCancel: () => this.setState({ confirm: null }) };
+      else conf = { title: "Reset to original content?", body: "Every edit and added item across all tabs will be replaced with the original seed content. Export first if you want a backup.", label: "Reset everything", onConfirm: () => this._doReset(), onCancel: () => this.setState({ confirm: null }) };
+    }
+
+    return {
+      notReady: false, tabs,
+      brandName: (st.data.settings && st.data.settings.toolName) || "Field Playbook",
+      brandTagline: (st.data.settings && st.data.settings.toolTagline) || "Agent sales enablement",
+      bannerOn: bannerOn, banner: bannerObj,
+      showCobGrid, showCobDetail, showVertical, showObjection, showResources, showManageGate, showManage,
+      cobCards, detail,
+      cobHdr, vHdr, oHdr, resHdr, noticeOpen, notice,
+      vChips: vDeck.chips, vCards: vDeck.cards, vEmpty: vDeck.empty, vSearch: st.vSearch, onVSearch: (ev) => this.setState({ vSearch: ev.target.value }),
+      oChips: oDeck.chips, oCards: oDeck.cards, oEmpty: oDeck.empty, oSearch: st.oSearch, onOSearch: (ev) => this.setState({ oSearch: ev.target.value }),
+      resDocs: res.filter((r) => r.type === "doc"), resSheets: res.filter((r) => r.type === "sheet").map((s) => ({ ...s, hasLink: !!(s.link && s.link.trim() && s.link.trim() !== "#") })), resContacts: res.filter((r) => r.type === "contact"),
+      gateValue: st.gateValue, gateError: st.gateError, gateHint: code,
+      onGateInput: (ev) => this.setState({ gateValue: ev.target.value, gateError: false }),
+      onGateSubmit: (ev) => { ev.preventDefault(); if (st.gateValue === code) this.setState({ gate: true, gateValue: "", gateError: false }); else this.setState({ gateError: true, gateValue: "" }); },
+      manageSegs, manageRows, addLabel, colTitle, colSub,
+      onAddNew: () => this._openAdd(md),
+      onExport: () => this._export(), onImportClick: () => this.fileRef.current && this.fileRef.current.click(), onImportFile: (ev) => this._importFile(ev), fileRef: this.fileRef,
+      onReset: () => this.setState({ confirm: { kind: "reset" } }),
+      editorOpen, ed,
+      onEdClose: () => this.setState({ editor: null }),
+      onEdSave: () => this._saveEditor(),
+      onEdDelete: () => { const e = st.editor; const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob" }; this.setState({ confirm: { kind: "delete", key: map[e.kind], id: e.draft.id, fromEditor: true } }); },
+      onScrimClick: (ev) => { if (ev.target === ev.currentTarget) this.setState({ editor: null }); },
+      confirmOpen, conf,
+      onConfScrim: (ev) => { if (ev.target === ev.currentTarget) this.setState({ confirm: null }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

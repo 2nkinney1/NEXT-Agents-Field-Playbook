@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/ergo-next-design-system-019dcfd7-4838-70c6-a592-2f290c5c2525/tokens.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <script src="_ds/ergo-next-design-system-019dcfd7-4838-70c6-a592-2f290c5c2525/_ds_bundle.js"></script>
+  <style>
+    html, body { margin: 0; background: var(--en-canvas); }
+    @keyframes pbpop { from { transform: translateY(12px) scale(.98); opacity: 0; } to { transform: none; opacity: 1; } }
+    *::-webkit-scrollbar { width: 8px; height: 8px; }
+    *::-webkit-scrollbar-thumb { background: var(--en-border); border-radius: 4px; }
+  </style>
+  <script src="seed-data.js"></script>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:var(--en-canvas);font-family:var(--en-font-sans);color:var(--en-text);">
+
+  <header style="background:#fff;border-bottom:1px solid var(--en-divider);position:sticky;top:0;z-index:30;">
+    <div style="max-width:1100px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <img src="assets/logo/ergo-next-mre-horizontal-red.svg" alt="ERGO NEXT" style="height:30px;width:auto;display:block;" />
+        <span style="width:1px;height:32px;background:var(--en-divider);"></span>
+        <div style="display:flex;flex-direction:column;line-height:1.15;flex:0 0 auto;">
+          <span style="font-weight:700;font-size:18px;color:var(--en-text);white-space:nowrap;">Manage content</span>
+          <span style="font-size:12px;color:var(--en-text-subtle);letter-spacing:.02em;white-space:nowrap;">Field Playbook admin</span>
+        </div>
+      </div>
+      <a href="COB Coverage Field Playbook.dc.html" class="en-btn en-btn--tertiary en-btn--sm" style="text-decoration:none;"><i class="ti ti-arrow-left"></i> Back to playbook</a>
+    </div>
+  </header>
+
+  <main style="max-width:1100px;margin:0 auto;width:100%;padding:32px;flex:1;box-sizing:border-box;">
+
+    <sc-if value="{{ notReady }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:120px 0;text-align:center;color:var(--en-text-subtle);">Loading content…</div>
+    </sc-if>
+
+    <!-- GATE -->
+    <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;place-items:center;padding:48px 0;">
+        <form onSubmit="{{ onGateSubmit }}" style="width:100%;max-width:420px;background:#fff;border-radius:15px;padding:40px;box-shadow:var(--en-shadow-2);border:1px solid var(--en-divider);box-sizing:border-box;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;margin-bottom:20px;"><i class="ti ti-lock" style="font-size:22px;"></i></div>
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 6px;">Restricted area</h2>
+          <p style="color:var(--en-text-muted);font-size:14px;margin:0 0 20px;line-height:1.5;">Enter the access code to add, edit, and reorder everything the field team sees in the playbook.</p>
+          <label class="en-label" style="display:block;margin-bottom:6px;">Access code</label>
+          <input value="{{ gateValue }}" onChange="{{ onGateInput }}" type="password" placeholder="••••••" class="en-input" style="width:100%;height:48px;box-sizing:border-box;" />
+          <sc-if value="{{ gateError }}" hint-placeholder-val="{{ false }}">
+            <div class="en-help en-help--error" style="margin-top:6px;">Incorrect code. Try again.</div>
+          </sc-if>
+          <button type="submit" class="en-btn en-btn--primary en-btn--sm" style="width:100%;margin-top:24px;">Unlock</button>
+          <p style="font-size:12px;color:var(--en-text-faint);margin:16px 0 0;text-align:center;">Demo access code: {{ gateHint }}</p>
+        </form>
+      </div>
+    </sc-if>
+
+    <!-- MANAGE -->
+    <sc-if value="{{ showManage }}" hint-placeholder-val="{{ false }}">
+      <div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+          <div>
+            <h2 style="font-size:24px;font-weight:700;margin:0 0 4px;">Manage content</h2>
+            <p style="color:var(--en-text-muted);font-size:14px;max-width:64ch;margin:0;line-height:1.5;">Add, edit, reorder, and delete everything the field team sees. Changes save to this browser instantly and appear in the playbook.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button onClick="{{ onExport }}" class="en-btn en-btn--tertiary en-btn--sm"><i class="ti ti-download"></i> Export</button>
+            <button onClick="{{ onImportClick }}" class="en-btn en-btn--tertiary en-btn--sm"><i class="ti ti-upload"></i> Import</button>
+            <button onClick="{{ onReset }}" class="en-btn en-btn--danger en-btn--sm"><i class="ti ti-refresh"></i> Reset</button>
+            <input ref="{{ fileRef }}" type="file" accept="application/json,.json" style="display:none;" onChange="{{ onImportFile }}" />
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+          <div style="display:inline-flex;background:var(--en-divider);border-radius:100px;padding:3px;gap:2px;flex-wrap:wrap;">
+            <sc-for list="{{ manageSegs }}" as="s" hint-placeholder-count="4">
+              <button onClick="{{ s.onClick }}" style="{{ s.style }}"><i class="ti {{ s.icon }}"></i> {{ s.label }} <span style="font-size:11px;opacity:.7;font-variant-numeric:tabular-nums;">{{ s.n }}</span></button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ canAdd }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ onAddNew }}" class="en-btn en-btn--primary en-btn--sm"><i class="ti ti-plus"></i> {{ addLabel }}</button>
+          </sc-if>
+        </div>
+        <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--en-paper);border-bottom:1px solid var(--en-divider);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--en-text-subtle);">
+            <span style="width:34px;"></span><span style="width:24px;">#</span><span style="flex:1;">{{ colTitle }}</span><span style="width:200px;">{{ colSub }}</span><span style="width:76px;text-align:right;">Actions</span>
+          </div>
+          <sc-for list="{{ manageRows }}" as="r" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--en-divider);">
+              <div style="display:flex;flex-direction:column;width:34px;align-items:center;">
+                <button onClick="{{ r.onUp }}" style="border:0;background:none;cursor:pointer;color:var(--en-text-subtle);padding:0;height:14px;display:grid;place-items:center;"><i class="ti ti-chevron-up" style="font-size:14px;"></i></button>
+                <button onClick="{{ r.onDown }}" style="border:0;background:none;cursor:pointer;color:var(--en-text-subtle);padding:0;height:14px;display:grid;place-items:center;"><i class="ti ti-chevron-down" style="font-size:14px;"></i></button>
+              </div>
+              <span style="width:24px;font-family:var(--en-font-mono);font-size:12px;color:var(--en-text-faint);">{{ r.idx }}</span>
+              <span style="width:30px;height:30px;border-radius:50%;background:var(--en-rose-50);display:grid;place-items:center;color:var(--en-burgundy);flex:0 0 auto;"><i class="ti {{ r.icon }}" style="font-size:16px;"></i></span>
+              <span style="flex:1;min-width:0;font-weight:700;font-size:14px;color:var(--en-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.title }}</span>
+              <span style="width:200px;font-size:12px;color:var(--en-text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.sub }}</span>
+              <div style="display:flex;gap:6px;width:76px;justify-content:flex-end;">
+                <button onClick="{{ r.onEdit }}" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--en-divider);background:#fff;color:var(--en-text-muted);cursor:pointer;display:grid;place-items:center;"><i class="ti ti-pencil" style="font-size:15px;"></i></button>
+                <sc-if value="{{ r.showDelete }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ r.onDelete }}" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--en-divider);background:#fff;color:var(--en-text-muted);cursor:pointer;display:grid;place-items:center;"><i class="ti ti-trash" style="font-size:15px;"></i></button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ showSettings }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:24px 28px;display:flex;flex-direction:column;gap:20px;max-width:680px;">
+            <div>
+              <div style="font-weight:700;font-size:16px;color:var(--en-text);">Tool branding</div>
+              <div style="font-size:13px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;">The name and the line beneath it, shown in the playbook header.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tool name</label><input value="{{ setToolName }}" onChange="{{ onSetToolName }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Field Playbook" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Text below the name</label><input value="{{ setToolTagline }}" onChange="{{ onSetToolTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Agent sales enablement" /></div>
+
+            <div style="border-top:1px solid var(--en-divider);padding-top:20px;display:flex;flex-direction:column;gap:14px;">
+              <div><div style="font-weight:700;font-size:16px;color:var(--en-text);">Coverage tiers</div><div style="font-size:13px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;max-width:50ch;">The three priority tiers on the COB Trainer — rename each label and the line shown beside it.</div></div>
+              <sc-for list="{{ setTiers }}" as="t" hint-placeholder-count="3">
+                <div style="background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
+                  <span class="en-tag {{ t.tagClass }}" style="height:auto;align-self:flex-start;">{{ t.label }}</span>
+                  <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:12px;">
+                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Label</label><input value="{{ t.label }}" onChange="{{ t.onLabel }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Need" /></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Description beside it</label><input value="{{ t.sub }}" onChange="{{ t.onSub }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Bind before they open the doors" /></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+
+            <div style="border-top:1px solid var(--en-divider);padding-top:20px;display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+                <div><div style="font-weight:700;font-size:16px;color:var(--en-text);">Banner</div><div style="font-size:13px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;max-width:50ch;">A persistent notice bar shown under the navigation tabs and above the content, on every tab. Unlike a section pop-up, it doesn’t dismiss.</div></div>
+                <button onClick="{{ onSetBannerToggle }}" style="{{ setBannerToggleStyle }}"><span style="{{ setBannerKnobStyle }}"></span></button>
+              </div>
+              <sc-if value="{{ setBannerOn }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:16px;background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:16px;">
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tone</label><select value="{{ setBannerTone }}" onChange="{{ onSetBannerTone }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ setToneOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Banner message</label><textarea value="{{ setBannerText }}" onChange="{{ onSetBannerText }}" class="en-input" style="height:70px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="e.g. New Q3 rate sheet is live — see Resources."></textarea></div>
+                  <div>
+                    <div class="en-label" style="margin-bottom:8px;">Preview</div>
+                    <div style="display:flex;align-items:center;gap:12px;background:{{ setBannerPrevBg }};border:1px solid var(--en-divider);border-radius:10px;padding:11px 16px;">
+                      <i class="ti {{ setBannerPrevIcon }}" style="font-size:19px;color:{{ setBannerPrevAccent }};flex:0 0 auto;"></i>
+                      <span style="font-size:14px;color:var(--en-text);font-weight:500;line-height:1.45;text-wrap:pretty;">{{ setBannerPrevText }}</span>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:12px;border-top:1px solid var(--en-divider);padding-top:18px;">
+              <button onClick="{{ onSetSave }}" class="en-btn en-btn--primary en-btn--sm">Save changes</button>
+              <sc-if value="{{ setSaved }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--en-leaf-d3);font-weight:600;display:inline-flex;align-items:center;gap:5px;"><i class="ti ti-check" style="font-size:16px;"></i> Saved</span></sc-if>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+  </main>
+
+  <!-- EDITOR MODAL -->
+  <sc-if value="{{ editorOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onScrimClick }}" style="position:fixed;inset:0;background:rgba(40,20,28,.5);display:flex;align-items:flex-start;justify-content:center;padding:48px 20px;z-index:100;overflow-y:auto;backdrop-filter:blur(2px);">
+      <div style="background:#fff;border-radius:15px;width:100%;max-width:640px;box-shadow:var(--en-shadow-3);display:flex;flex-direction:column;animation:pbpop .22s var(--en-ease);">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:24px 32px 16px;border-bottom:1px solid var(--en-divider);">
+          <div>
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;color:var(--en-burgundy);margin-bottom:4px;">{{ ed.eyebrow }}</div>
+            <h2 style="font-size:24px;font-weight:700;margin:0;">{{ ed.title }}</h2>
+          </div>
+          <button onClick="{{ onEdClose }}" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--en-divider);background:#fff;cursor:pointer;color:var(--en-text-muted);display:grid;place-items:center;"><i class="ti ti-x" style="font-size:18px;"></i></button>
+        </div>
+        <div style="padding:24px 32px;display:flex;flex-direction:column;gap:16px;max-height:64vh;overflow-y:auto;">
+
+          <sc-if value="{{ ed.isObjection }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Objection (front)</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Your price is too high" /></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Category</label><select value="{{ ed.category }}" onChange="{{ ed.onCategory }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.catOptions }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">What's really going on <span style="font-weight:400;color:var(--en-text-subtle);">— the root cause</span></label><textarea value="{{ ed.root }}" onChange="{{ ed.onRoot }}" class="en-input" style="height:76px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Validate &amp; reframe <span style="font-weight:400;color:var(--en-text-subtle);">— the natural response</span></label><textarea value="{{ ed.reframe }}" onChange="{{ ed.onReframe }}" class="en-input" style="height:90px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">The bridge <span style="font-weight:400;color:var(--en-text-subtle);">— the question that moves it forward</span></label><textarea value="{{ ed.bridge }}" onChange="{{ ed.onBridge }}" class="en-input" style="height:76px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea></div>
+          </sc-if>
+
+          <sc-if value="{{ ed.isVertical }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Industry name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. General Contractor" /></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Category</label><select value="{{ ed.category }}" onChange="{{ ed.onCategory }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.catOptions }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tagline <span style="font-weight:400;color:var(--en-text-subtle);">— the one-line risk summary</span></label><input value="{{ ed.tagline }}" onChange="{{ ed.onTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Multi-trade crews, job-site exposure" /></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><span class="en-label">{{ ed.gapsLabel }}</span><button onClick="{{ ed.onAddProduct }}" class="en-btn en-btn--text"><i class="ti ti-plus"></i> Add gap</button></div>
+            <sc-for list="{{ ed.products }}" as="p" hint-placeholder-count="3">
+              <div style="border:1px solid var(--en-divider);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--en-paper);">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="width:22px;height:22px;border-radius:50%;background:var(--en-burgundy);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;">{{ p.num }}</span>
+                  <div style="display:flex;gap:2px;margin-left:auto;">
+                    <button onClick="{{ p.onUp }}" style="width:26px;height:26px;border-radius:5px;border:1px solid var(--en-divider);background:#fff;cursor:pointer;color:var(--en-text-subtle);display:grid;place-items:center;"><i class="ti ti-chevron-up" style="font-size:13px;"></i></button>
+                    <button onClick="{{ p.onDown }}" style="width:26px;height:26px;border-radius:5px;border:1px solid var(--en-divider);background:#fff;cursor:pointer;color:var(--en-text-subtle);display:grid;place-items:center;"><i class="ti ti-chevron-down" style="font-size:13px;"></i></button>
+                  </div>
+                  <button onClick="{{ p.onRemove }}" style="width:26px;height:26px;border-radius:5px;border:1px solid var(--en-divider);background:#fff;cursor:pointer;color:var(--en-red);display:grid;place-items:center;"><i class="ti ti-trash" style="font-size:13px;"></i></button>
+                </div>
+                <input value="{{ p.name }}" onChange="{{ p.onName }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Product / coverage name" />
+                <textarea value="{{ p.why }}" onChange="{{ p.onWhy }}" class="en-input" style="height:52px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Why they're exposed…"></textarea>
+                <input value="{{ p.pivot }}" onChange="{{ p.onPivot }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Pivot question to ask…" />
+                <input value="{{ p.listen }}" onChange="{{ p.onListen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Listen for… — the cue that signals the gap" />
+              </div>
+            </sc-for>
+          </sc-if>
+
+          <sc-if value="{{ ed.isResource }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Type</label><select value="{{ ed.resType }}" onChange="{{ ed.onResType }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.typeOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. SMB Coverage Map" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resSubLabel }}</label><input value="{{ ed.subtitle }}" onChange="{{ ed.onSubtitle }}" class="en-input" style="height:44px;box-sizing:border-box;" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resBodyLabel }}</label><textarea value="{{ ed.body }}" onChange="{{ ed.onBody }}" class="en-input" style="height:90px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resLinkLabel }}</label><input value="{{ ed.link }}" onChange="{{ ed.onLink }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="https:// or #channel" /></div>
+          </sc-if>
+
+          <sc-if value="{{ ed.isCob }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Class name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Professional & financial services" /></div>
+            <div><label class="en-label" style="display:block;margin-bottom:6px;">Business types</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                <sc-for list="{{ ed.types }}" as="t" hint-placeholder-count="3">
+                  <span style="display:inline-flex;align-items:center;gap:2px;background:var(--en-canvas);border:1px solid var(--en-divider);border-radius:100px;padding:3px 4px 3px 12px;"><input value="{{ t.value }}" onChange="{{ t.onChange }}" style="border:0;background:none;font-family:inherit;font-size:14px;color:var(--en-text);padding:4px 0;width:{{ t.width }};outline:none;" /><button onClick="{{ t.onRemove }}" style="width:24px;height:24px;border-radius:50%;border:0;background:var(--en-divider);cursor:pointer;display:grid;place-items:center;color:var(--en-text-muted);"><i class="ti ti-x" style="font-size:13px;"></i></button></span>
+                </sc-for>
+                <button onClick="{{ ed.onAddType }}" class="en-btn en-btn--text" style="height:34px;"><i class="ti ti-plus"></i> Add type</button>
+              </div>
+            </div>
+            <sc-for list="{{ ed.cobTiers }}" as="tier" hint-placeholder-count="3">
+              <div style="margin-top:4px;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span class="en-tag {{ tier.tagClass }}" style="height:auto;">{{ tier.label }}</span><span style="font-size:14px;color:var(--en-text-subtle);">{{ tier.countText }}</span></div>
+                <sc-for list="{{ tier.coverages }}" as="cov" hint-placeholder-count="2">
+                  <div style="background:var(--en-paper);border:1px solid var(--en-divider);border-radius:8px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;gap:10px;align-items:center;"><input value="{{ cov.name }}" onChange="{{ cov.onName }}" class="en-input" style="height:40px;font-weight:700;flex:1;box-sizing:border-box;" placeholder="Coverage name" /><button onClick="{{ cov.onDelete }}" class="en-btn en-btn--danger en-btn--sm" style="height:36px;padding:0 14px;"><i class="ti ti-trash"></i></button></div>
+                    <textarea value="{{ cov.desc }}" onChange="{{ cov.onDesc }}" class="en-input" style="height:64px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="What it does…"></textarea>
+                    <textarea value="{{ cov.signal }}" onChange="{{ cov.onSignal }}" class="en-input" style="height:56px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Spot the need · client cue…"></textarea>
+                    <input value="{{ cov.when }}" onChange="{{ cov.onWhen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="When to bring it up" />
+                    <textarea value="{{ cov.cross }}" onChange="{{ cov.onCross }}" class="en-input" style="height:56px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Cross-sell note…"></textarea>
+                    <textarea value="{{ cov.claim }}" onChange="{{ cov.onClaim }}" class="en-input" style="height:64px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Claims example — a real-world story to help explain this coverage to a customer…"></textarea>
+                  </div>
+                </sc-for>
+                <button onClick="{{ tier.onAdd }}" class="en-btn en-btn--text"><i class="ti ti-plus"></i> Add {{ tier.labelLower }} coverage</button>
+              </div>
+            </sc-for>
+          </sc-if>
+
+          <sc-if value="{{ ed.isSection }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 160px;gap:16px;">
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tab name</label><input value="{{ ed.secLabel }}" onChange="{{ ed.onSecLabel }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. COB Coverage" /></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tab icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Eyebrow <span style="font-weight:400;color:var(--en-text-subtle);">— small label above the title</span></label><input value="{{ ed.eyebrow2 }}" onChange="{{ ed.onEyebrow }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Class of business · coverage discovery" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.headline }}" onChange="{{ ed.onHeadline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="The big headline for this tab" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Description</label><textarea value="{{ ed.blurb }}" onChange="{{ ed.onBlurb }}" class="en-input" style="height:90px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="The intro paragraph shown under the title…"></textarea></div>
+            <div style="border-top:1px solid var(--en-divider);margin-top:4px;padding-top:18px;display:flex;flex-direction:column;gap:16px;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+                <div><div style="font-weight:700;font-size:15px;color:var(--en-text);">Pop-up notice</div><div style="font-size:12.5px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;max-width:46ch;">A rectangular notice that pops up over the playbook when the field team opens this tab.</div></div>
+                <button onClick="{{ ed.onNoticeToggle }}" style="{{ ed.noticeToggleStyle }}"><span style="{{ ed.noticeKnobStyle }}"></span></button>
+              </div>
+              <sc-if value="{{ ed.noticeOn }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;flex-direction:column;gap:16px;background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:16px;">
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tone</label><select value="{{ ed.noticeTone }}" onChange="{{ ed.onNoticeTone }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.toneOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Notice title</label><input value="{{ ed.noticeTitle }}" onChange="{{ ed.onNoticeTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. New Q3 rate sheet is live" /></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Notice message</label><textarea value="{{ ed.noticeBody }}" onChange="{{ ed.onNoticeBody }}" class="en-input" style="height:80px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="What you want the field team to know…"></textarea></div>
+                  <div>
+                    <div class="en-label" style="margin-bottom:8px;">Preview</div>
+                    <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--en-divider);border-top:4px solid {{ ed.noticePrevAccent }};border-radius:10px;padding:14px 16px;">
+                      <span style="width:36px;height:36px;border-radius:50%;background:{{ ed.noticePrevBg }};color:{{ ed.noticePrevAccent }};display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ ed.noticePrevIcon }}" style="font-size:18px;"></i></span>
+                      <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:14px;color:var(--en-text);text-wrap:pretty;">{{ ed.noticePrevTitle }}</div><div style="font-size:13px;color:var(--en-text-muted);line-height:1.5;margin-top:2px;text-wrap:pretty;">{{ ed.noticePrevBody }}</div></div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+        </div>
+        <div style="padding:16px 32px;border-top:1px solid var(--en-divider);display:flex;align-items:center;gap:10px;">
+          <sc-if value="{{ ed.showDelete }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ onEdDelete }}" class="en-btn en-btn--danger en-btn--sm"><i class="ti ti-trash"></i> Delete</button>
+          </sc-if>
+          <div style="display:flex;gap:10px;margin-left:auto;">
+            <button onClick="{{ onEdClose }}" class="en-btn en-btn--tertiary en-btn--sm">Cancel</button>
+            <button onClick="{{ onEdSave }}" class="en-btn en-btn--primary en-btn--sm">{{ ed.saveLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CONFIRM -->
+  <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onConfScrim }}" style="position:fixed;inset:0;background:rgba(40,20,28,.5);display:flex;align-items:flex-start;justify-content:center;padding:80px 20px;z-index:110;backdrop-filter:blur(2px);">
+      <div style="background:#fff;border-radius:15px;width:100%;max-width:420px;box-shadow:var(--en-shadow-3);animation:pbpop .22s var(--en-ease);">
+        <div style="padding:28px 32px 8px;"><h3 style="font-size:20px;font-weight:700;margin:0 0 8px;">{{ conf.title }}</h3><p style="color:var(--en-text-muted);line-height:1.5;margin:0;">{{ conf.body }}</p></div>
+        <div style="padding:16px 32px;display:flex;justify-content:flex-end;gap:10px;"><button onClick="{{ conf.onCancel }}" class="en-btn en-btn--tertiary en-btn--sm">Cancel</button><button onClick="{{ conf.onConfirm }}" class="en-btn en-btn--danger en-btn--sm">{{ conf.label }}</button></div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;lockManage&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;accessCode&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;000000&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  fileRef = React.createRef();
+
+  ICON_OPTS = ["ti-currency-dollar","ti-tag","ti-arrows-left-right","ti-clock","ti-mail","ti-calendar","ti-users","ti-shield-check","ti-help-circle","ti-phone-off","ti-package","ti-building-store","ti-hammer","ti-tools-kitchen-2","ti-sparkles","ti-leaf","ti-device-laptop","ti-truck","ti-scissors","ti-home-heart","ti-home","ti-barbell","ti-briefcase","ti-heart-handshake","ti-message-circle","ti-shield-half","ti-stethoscope","ti-code","ti-tools","ti-building-cog","ti-bed","ti-folder","ti-file","ti-map-2","ti-receipt","ti-headset","ti-list-search","ti-target-arrow","ti-file-certificate","ti-stack-2","ti-messages","ti-arrows-shuffle","ti-urgent","ti-file-pencil","ti-scale","ti-external-link"].map((v) => ({ value: v, label: v.replace("ti-", "") }));
+
+  state = {
+    ready: false, data: null,
+    manageDeck: "cob", gate: false, gateValue: "", gateError: false,
+    editor: null, confirm: null,
+    settingsDraft: null, settingsSaved: false,
+  };
+
+  componentDidMount() { this._tryLoad(); }
+
+  _tryLoad() {
+    const S = window.__PB_SEED;
+    if (!S) { requestAnimationFrame(() => this._tryLoad()); return; }
+    this.SEED = S;
+    let data = null;
+    try {
+      const raw = localStorage.getItem(S.STORE_KEY);
+      if (raw) { const p = JSON.parse(raw); if (p && p.cob && p.objections && p.verticals && p.resources) data = p; }
+    } catch (e) {}
+    if (!data) data = S.buildSeed();
+    data = S.ensureSections(data);
+    this.setState({ data, ready: true });
+  }
+
+  _save(data) { try { localStorage.setItem(this.SEED.STORE_KEY, JSON.stringify(data)); } catch (e) {} }
+  _commit(data) { this._save(data); this.setState({ data }); }
+
+  _edDraft(mut) {
+    this.setState((s) => {
+      const d = JSON.parse(JSON.stringify(s.editor.draft));
+      mut(d);
+      return { editor: { ...s.editor, draft: d } };
+    });
+  }
+  _setDraft(mut) {
+    this.setState((s) => {
+      const base = s.settingsDraft || (s.data && s.data.settings) || { toolName: "", toolTagline: "", banner: { on: false, tone: "info", text: "" } };
+      const d = JSON.parse(JSON.stringify(base));
+      if (!d.banner) d.banner = { on: false, tone: "info", text: "" };
+      mut(d);
+      return { settingsDraft: d, settingsSaved: false };
+    });
+  }
+  _saveSettings() {
+    this.setState((s) => {
+      const d = s.settingsDraft; if (!d) return {};
+      const data = { ...s.data, settings: JSON.parse(JSON.stringify(d)) };
+      this._save(data);
+      return { data, settingsSaved: true };
+    });
+    clearTimeout(this._setSavedT);
+    this._setSavedT = setTimeout(() => this.setState({ settingsSaved: false }), 2200);
+  }
+  _blank(kind) {
+    const uid = this.SEED.uid;
+    if (kind === "objection") return { id: uid("obj"), deck: "objection", title: "", icon: "ti-message-circle", category: "Price", root: "", reframe: "", bridge: "" };
+    if (kind === "vertical") return { id: uid("ver"), deck: "vertical", title: "", icon: "ti-briefcase", category: "Workers' Comp", tagline: "", products: [{ id: uid("p"), name: "", why: "", pivot: "", listen: "" }] };
+    if (kind === "resource") return { id: uid("res"), type: "doc", icon: "ti-file", title: "", subtitle: "", body: "", link: "#" };
+    return { id: uid("cob"), icon: "ti-briefcase", accent: "#8e0038", bg: "var(--en-rose-50)", title: "", types: ["New type"], policies: { must: [], rec: [], opt: [] } };
+  }
+  _openEdit(kind, item) { this.setState({ editor: { kind, isNew: false, draft: JSON.parse(JSON.stringify(item)) } }); }
+  _openAdd(kind) { this.setState({ editor: { kind, isNew: true, draft: this._blank(kind) } }); }
+
+  _saveEditor() {
+    const e = this.state.editor; if (!e) return;
+    const d = e.draft;
+    const nameField = e.kind === "section" ? "label" : "title";
+    if (!d[nameField] || !d[nameField].trim()) return;
+    const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob", section: "sections" };
+    const key = map[e.kind];
+    const data = { ...this.state.data };
+    const arr = [...data[key]];
+    const idx = arr.findIndex((x) => x.id === d.id);
+    if (idx >= 0) arr[idx] = d; else arr.push(d);
+    data[key] = arr;
+    this._save(data);
+    this.setState({ data, editor: null });
+  }
+
+  _move(key, i, dir) {
+    const arr = [...this.state.data[key]];
+    const j = i + dir; if (j < 0 || j >= arr.length) return;
+    const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    this._commit({ ...this.state.data, [key]: arr });
+  }
+
+  _doDelete() {
+    const c = this.state.confirm;
+    const data = { ...this.state.data };
+    data[c.key] = data[c.key].filter((x) => x.id !== c.id);
+    this._save(data);
+    this.setState({ data, confirm: null, editor: c.fromEditor ? null : this.state.editor });
+  }
+  _doReset() { const data = this.SEED.buildSeed(); this._save(data); this.setState({ data, confirm: null }); }
+
+  _export() {
+    const blob = new Blob([JSON.stringify(this.state.data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "cob-field-playbook-content.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+  _importFile(ev) {
+    const f = ev.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const p = JSON.parse(r.result);
+        if (p && p.cob && p.objections && p.verticals && p.resources) { this._save(p); this.setState({ data: p }); }
+        else alert("That file doesn't look like a Playbook export.");
+      } catch (err) { alert("Couldn't read that file — is it valid JSON?"); }
+    };
+    r.readAsText(f);
+    ev.target.value = "";
+  }
+
+  renderVals() {
+    const st = this.state;
+    const lock = this.props.lockManage !== false;
+    const code = this.props.accessCode || "000000";
+
+    if (!st.ready || !st.data) {
+      return { notReady: true, showGate: false, showManage: false, editorOpen: false, confirmOpen: false };
+    }
+
+    const SEED = this.SEED;
+    const TMETA = SEED.TIER_META, ORDER = SEED.TIER_ORDER;
+    const TOV = (st.data.settings && st.data.settings.tiers) || {};
+    const TIER = {};
+    ORDER.forEach((k) => { const o = TOV[k] || {}; TIER[k] = { ...TMETA[k], label: o.label || TMETA[k].label, sub: o.sub || TMETA[k].sub }; });
+
+    const showGate = lock && !st.gate;
+    const showManage = !lock || st.gate;
+
+    const segBase = "display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border:0;cursor:pointer;border-radius:100px;font-family:inherit;font-size:14px;font-weight:700;transition:all .12s;";
+    const segOn = "background:#fff;color:var(--en-burgundy);box-shadow:var(--en-shadow-1);";
+    const segOff = "background:transparent;color:var(--en-text-muted);";
+    const md = st.manageDeck;
+    const segDefs = [
+      { id: "cob", label: "COB classes", icon: "ti-shield-half", n: st.data.cob.length },
+      { id: "vertical", label: "Verticals", icon: "ti-building-store", n: st.data.verticals.length },
+      { id: "objection", label: "Objections", icon: "ti-messages", n: st.data.objections.length },
+      { id: "resource", label: "Resources", icon: "ti-folder", n: st.data.resources.length },
+      { id: "section", label: "Tabs & sections", icon: "ti-layout-navbar", n: st.data.sections.length },
+      { id: "settings", label: "General", icon: "ti-settings", n: "" },
+    ];
+    const manageSegs = segDefs.map((s) => ({ ...s, style: segBase + (md === s.id ? segOn : segOff), onClick: () => this.setState({ manageDeck: s.id }) }));
+    const dmap = { cob: "cob", vertical: "verticals", objection: "objections", resource: "resources", section: "sections" };
+    const key = dmap[md];
+    const list = st.data[key] || [];
+    const showSettings = md === "settings";
+    const showList = !showSettings;
+    const canAdd = md !== "section" && md !== "settings";
+    const addLabel = { cob: "Add class", vertical: "Add vertical", objection: "Add objection", resource: "Add resource", section: "", settings: "" }[md];
+    const colTitle = { cob: "Class", vertical: "Industry", objection: "Objection", resource: "Resource", section: "Tab", settings: "" }[md];
+    const colSub = { cob: "Coverages", vertical: "Category", objection: "Category", resource: "Type", section: "Notice", settings: "" }[md];
+    const typeLabels = { doc: "Document / link", sheet: "Cheat sheet", contact: "Contact" };
+    const manageRows = showList ? list.map((it, i) => {
+      let title, sub;
+      if (md === "cob") { const total = ORDER.reduce((s, k) => s + (it.policies[k] || []).length, 0); title = it.title; sub = total + " coverages · " + it.types.length + " types"; }
+      else if (md === "vertical") { title = it.title; sub = it.category; }
+      else if (md === "objection") { title = "“" + it.title + "”"; sub = it.category; }
+      else if (md === "section") { title = it.label; sub = (it.notice && it.notice.on) ? "Pop-up notice on" : "No notice"; }
+      else { title = it.title; sub = typeLabels[it.type] || it.type; }
+      return {
+        id: it.id, idx: i + 1, icon: it.icon || "ti-file", title, sub, showDelete: md !== "section",
+        onUp: () => this._move(key, i, -1), onDown: () => this._move(key, i, 1),
+        onEdit: () => this._openEdit(md, it),
+        onDelete: () => this.setState({ confirm: { kind: "delete", key, id: it.id } }),
+      };
+    }) : [];
+
+    let ed = null;
+    const editorOpen = !!st.editor;
+    if (st.editor) {
+      const e = st.editor, d = e.draft;
+      const setF = (f, v) => this._edDraft((dd) => { dd[f] = v; });
+      const titles = { objection: "Objection card", vertical: "Vertical-risk card", resource: "Resource", cob: "COB class", section: "Tab & section" };
+      const titlesLower = { objection: "objection card", vertical: "vertical-risk card", resource: "resource", cob: "COB class", section: "tab & section" };
+      ed = {
+        isObjection: e.kind === "objection", isVertical: e.kind === "vertical", isResource: e.kind === "resource", isCob: e.kind === "cob", isSection: e.kind === "section",
+        eyebrow: titles[e.kind], title: (e.isNew ? "Add " : "Edit ") + titlesLower[e.kind],
+        showDelete: !e.isNew, saveLabel: e.isNew ? "Add" : "Save changes",
+        title2: d.title, onTitle: (ev) => setF("title", ev.target.value),
+        icon: d.icon, onIcon: (ev) => setF("icon", ev.target.value), iconOptions: this.ICON_OPTS,
+      };
+      if (e.kind === "objection" || e.kind === "vertical") {
+        ed.category = d.category;
+        ed.onCategory = (ev) => setF("category", ev.target.value);
+        ed.catOptions = e.kind === "objection" ? SEED.OBJECTION_CATS : SEED.VERTICAL_CATS;
+      }
+      if (e.kind === "objection") {
+        ed.root = d.root; ed.onRoot = (ev) => setF("root", ev.target.value);
+        ed.reframe = d.reframe; ed.onReframe = (ev) => setF("reframe", ev.target.value);
+        ed.bridge = d.bridge; ed.onBridge = (ev) => setF("bridge", ev.target.value);
+      }
+      if (e.kind === "vertical") {
+        ed.tagline = d.tagline; ed.onTagline = (ev) => setF("tagline", ev.target.value);
+        ed.gapsLabel = "Cross-sell gaps (" + d.products.length + ")";
+        ed.onAddProduct = () => this._edDraft((dd) => dd.products.push({ id: SEED.uid("p"), name: "", why: "", pivot: "", listen: "" }));
+        ed.products = d.products.map((p, i) => ({
+          num: i + 1, name: p.name, why: p.why, pivot: p.pivot, listen: p.listen,
+          onName: (ev) => this._edDraft((dd) => { dd.products[i].name = ev.target.value; }),
+          onWhy: (ev) => this._edDraft((dd) => { dd.products[i].why = ev.target.value; }),
+          onPivot: (ev) => this._edDraft((dd) => { dd.products[i].pivot = ev.target.value; }),
+          onListen: (ev) => this._edDraft((dd) => { dd.products[i].listen = ev.target.value; }),
+          onUp: () => this._edDraft((dd) => { const j = i - 1; if (j < 0) return; const t = dd.products[i]; dd.products[i] = dd.products[j]; dd.products[j] = t; }),
+          onDown: () => this._edDraft((dd) => { const j = i + 1; if (j >= dd.products.length) return; const t = dd.products[i]; dd.products[i] = dd.products[j]; dd.products[j] = t; }),
+          onRemove: () => this._edDraft((dd) => { if (dd.products.length > 1) dd.products.splice(i, 1); }),
+        }));
+      }
+      if (e.kind === "resource") {
+        ed.resType = d.type; ed.onResType = (ev) => setF("type", ev.target.value);
+        ed.typeOptions = [{ value: "doc", label: "Document / link" }, { value: "sheet", label: "Cheat sheet" }, { value: "contact", label: "Contact" }];
+        ed.subtitle = d.subtitle; ed.onSubtitle = (ev) => setF("subtitle", ev.target.value);
+        ed.body = d.body; ed.onBody = (ev) => setF("body", ev.target.value);
+        ed.link = d.link; ed.onLink = (ev) => setF("link", ev.target.value);
+        ed.resSubLabel = d.type === "contact" ? "Role" : "Description";
+        ed.resBodyLabel = d.type === "sheet" ? "Sheet body" : (d.type === "contact" ? "When to reach them" : "Notes (optional)");
+        ed.resLinkLabel = d.type === "contact" ? "Contact / channel" : "Link URL";
+      }
+      if (e.kind === "section") {
+        ed.secLabel = d.label; ed.onSecLabel = (ev) => setF("label", ev.target.value);
+        ed.eyebrow2 = d.eyebrow; ed.onEyebrow = (ev) => setF("eyebrow", ev.target.value);
+        ed.headline = d.headline; ed.onHeadline = (ev) => setF("headline", ev.target.value);
+        ed.blurb = d.blurb; ed.onBlurb = (ev) => setF("blurb", ev.target.value);
+        const n = d.notice || { on: false, tone: "info", title: "", body: "" };
+        const patchNotice = (f, v) => this._edDraft((dd) => { dd.notice = { on: false, tone: "info", title: "", body: "", ...(dd.notice || {}) }; dd.notice[f] = v; });
+        ed.noticeOn = !!n.on;
+        ed.onNoticeToggle = () => patchNotice("on", !n.on);
+        ed.noticeToggleStyle = "position:relative;width:44px;height:26px;border-radius:100px;border:0;cursor:pointer;flex:0 0 auto;transition:background .15s;background:" + (n.on ? "var(--en-burgundy)" : "var(--en-border)") + ";";
+        ed.noticeKnobStyle = "position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s;transform:translateX(" + (n.on ? "18px" : "0") + ");box-shadow:0 1px 2px rgba(0,0,0,.25);";
+        ed.noticeTone = n.tone || "info"; ed.onNoticeTone = (ev) => patchNotice("tone", ev.target.value);
+        ed.toneOptions = Object.keys(SEED.NOTICE_TONES).map((k) => ({ value: k, label: SEED.NOTICE_TONES[k].label }));
+        ed.noticeTitle = n.title || ""; ed.onNoticeTitle = (ev) => patchNotice("title", ev.target.value);
+        ed.noticeBody = n.body || ""; ed.onNoticeBody = (ev) => patchNotice("body", ev.target.value);
+        const TM = SEED.NOTICE_TONES[n.tone] || SEED.NOTICE_TONES.info;
+        ed.noticePrevAccent = TM.accent; ed.noticePrevBg = TM.bg; ed.noticePrevIcon = TM.icon;
+        ed.noticePrevTitle = n.title || d.label; ed.noticePrevBody = n.body || "Your notice message will appear here.";
+      }
+
+      if (e.kind === "cob") {
+        ed.types = d.types.map((t, i) => ({
+          value: t, width: Math.max(70, t.length * 7.5) + "px",
+          onChange: (ev) => this._edDraft((dd) => { dd.types[i] = ev.target.value; }),
+          onRemove: () => this._edDraft((dd) => { dd.types.splice(i, 1); }),
+        }));
+        ed.onAddType = () => this._edDraft((dd) => dd.types.push("New type"));
+        ed.cobTiers = ORDER.map((k) => {
+          const tm = TIER[k], pols = d.policies[k] || [];
+          return {
+            key: k, label: tm.label, labelLower: tm.label.toLowerCase(), tagClass: tm.tagClass,
+            countText: pols.length + " coverage" + (pols.length === 1 ? "" : "s"),
+            onAdd: () => this._edDraft((dd) => dd.policies[k].push({ id: SEED.uid("cov"), name: "", desc: "", signal: "", when: "", cross: "", claim: "" })),
+            coverages: pols.map((p, i) => ({
+              name: p.name, desc: p.desc, signal: p.signal, when: p.when, cross: p.cross, claim: p.claim,
+              onName: (ev) => this._edDraft((dd) => { dd.policies[k][i].name = ev.target.value; }),
+              onDesc: (ev) => this._edDraft((dd) => { dd.policies[k][i].desc = ev.target.value; }),
+              onSignal: (ev) => this._edDraft((dd) => { dd.policies[k][i].signal = ev.target.value; }),
+              onWhen: (ev) => this._edDraft((dd) => { dd.policies[k][i].when = ev.target.value; }),
+              onCross: (ev) => this._edDraft((dd) => { dd.policies[k][i].cross = ev.target.value; }),
+              onClaim: (ev) => this._edDraft((dd) => { dd.policies[k][i].claim = ev.target.value; }),
+              onDelete: () => this._edDraft((dd) => { dd.policies[k].splice(i, 1); }),
+            })),
+          };
+        });
+      }
+    }
+
+    let conf = null;
+    const confirmOpen = !!st.confirm;
+    if (st.confirm) {
+      if (st.confirm.kind === "delete") conf = { title: "Delete this item?", body: "It will be removed from the playbook. This can’t be undone unless you re-import a backup.", label: "Delete", onConfirm: () => this._doDelete(), onCancel: () => this.setState({ confirm: null }) };
+      else conf = { title: "Reset to original content?", body: "Every edit and added item across all tabs will be replaced with the original seed content. Export first if you want a backup.", label: "Reset everything", onConfirm: () => this._doReset(), onCancel: () => this.setState({ confirm: null }) };
+    }
+
+    /* General settings — tool branding + persistent banner (inline form) */
+    const sd = st.settingsDraft || st.data.settings || { toolName: "", toolTagline: "", banner: { on: false, tone: "info", text: "" }, tiers: {} };
+    const sBn = sd.banner || { on: false, tone: "info", text: "" };
+    const STONE = SEED.NOTICE_TONES[sBn.tone] || SEED.NOTICE_TONES.info;
+    const setBnText = (sBn.text && sBn.text.trim()) ? sBn.text : "Your banner message will appear here.";
+    const sTiers = sd.tiers || {};
+    const setTiers = ORDER.map((k) => ({
+      key: k, tagClass: TMETA[k].tagClass,
+      label: (sTiers[k] && typeof sTiers[k].label === "string") ? sTiers[k].label : TMETA[k].label,
+      sub: (sTiers[k] && typeof sTiers[k].sub === "string") ? sTiers[k].sub : TMETA[k].sub,
+      onLabel: (ev) => this._setDraft((d) => { d.tiers = d.tiers || {}; d.tiers[k] = { ...(d.tiers[k] || {}) }; d.tiers[k].label = ev.target.value; }),
+      onSub: (ev) => this._setDraft((d) => { d.tiers = d.tiers || {}; d.tiers[k] = { ...(d.tiers[k] || {}) }; d.tiers[k].sub = ev.target.value; }),
+    }));
+
+    return {
+      notReady: false, showGate, showManage,
+      gateValue: st.gateValue, gateError: st.gateError, gateHint: code,
+      onGateInput: (ev) => this.setState({ gateValue: ev.target.value, gateError: false }),
+      onGateSubmit: (ev) => { ev.preventDefault(); if (st.gateValue === code) this.setState({ gate: true, gateValue: "", gateError: false }); else this.setState({ gateError: true, gateValue: "" }); },
+      manageSegs, manageRows, addLabel, colTitle, colSub, canAdd, showList, showSettings,
+      setToolName: sd.toolName, onSetToolName: (ev) => this._setDraft((d) => { d.toolName = ev.target.value; }),
+      setToolTagline: sd.toolTagline, onSetToolTagline: (ev) => this._setDraft((d) => { d.toolTagline = ev.target.value; }),
+      setBannerOn: !!sBn.on,
+      onSetBannerToggle: () => this._setDraft((d) => { d.banner.on = !d.banner.on; }),
+      setBannerToggleStyle: "position:relative;width:44px;height:26px;border-radius:100px;border:0;cursor:pointer;flex:0 0 auto;transition:background .15s;background:" + (sBn.on ? "var(--en-burgundy)" : "var(--en-border)") + ";",
+      setBannerKnobStyle: "position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s;transform:translateX(" + (sBn.on ? "18px" : "0") + ");box-shadow:0 1px 2px rgba(0,0,0,.25);",
+      setBannerTone: sBn.tone || "info", onSetBannerTone: (ev) => this._setDraft((d) => { d.banner.tone = ev.target.value; }),
+      setToneOptions: Object.keys(SEED.NOTICE_TONES).map((k) => ({ value: k, label: SEED.NOTICE_TONES[k].label })),
+      setBannerText: sBn.text || "", onSetBannerText: (ev) => this._setDraft((d) => { d.banner.text = ev.target.value; }),
+      setBannerPrevBg: STONE.bg, setBannerPrevAccent: STONE.accent, setBannerPrevIcon: STONE.icon, setBannerPrevText: setBnText,
+      setTiers,
+      onSetSave: () => this._saveSettings(), setSaved: !!st.settingsSaved,
+      onAddNew: () => this._openAdd(md),
+      onExport: () => this._export(), onImportClick: () => this.fileRef.current && this.fileRef.current.click(), onImportFile: (ev) => this._importFile(ev), fileRef: this.fileRef,
+      onReset: () => this.setState({ confirm: { kind: "reset" } }),
+      editorOpen, ed,
+      onEdClose: () => this.setState({ editor: null }),
+      onEdSave: () => this._saveEditor(),
+      onEdDelete: () => { const e = st.editor; const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob" }; this.setState({ confirm: { kind: "delete", key: map[e.kind], id: e.draft.id, fromEditor: true } }); },
+      onScrimClick: (ev) => { if (ev.target === ev.currentTarget) this.setState({ editor: null }); },
+      confirmOpen, conf,
+      onConfScrim: (ev) => { if (ev.target === ev.currentTarget) this.setState({ confirm: null }); },
+    };
+  }
+}
+</script>
+</body>
+</html>
