@@ -611,6 +611,22 @@
       notice: { on: false, tone: "info", title: "", body: "" } },
   ];
 
+  /* ── Resource sub-sections (groups shown on the Resources tab) ── */
+  const RES_SECTIONS = [
+    { id: "cheats", title: "Quick Reference / Cheat Sheets", subtitle: "Applies to everyone" },
+    { id: "pc",     title: "P&C Resources & Guides", subtitle: "" },
+    { id: "wc",     title: "Workers' Comp Resources & Guides", subtitle: "" },
+  ];
+  /* Where a resource lands by default — pure structure, never edits content. */
+  function defaultResSection(r) {
+    if (r.type === "sheet") return "cheats";
+    if (r.type === "doc") {
+      const hay = ((r.title || "") + " " + (r.subtitle || "")).toLowerCase();
+      return /workers|ncci|class code/.test(hay) ? "wc" : "pc";
+    }
+    return ""; // contacts & others: kept in data, shown only once assigned a section
+  }
+
   const NOTICE_TONES = {
     info:    { label: "Info",    icon: "ti-info-circle",    accent: "var(--en-burgundy)", bg: "var(--en-rose-50)" },
     warning: { label: "Warning", icon: "ti-alert-triangle", accent: "var(--en-amber)",    bg: "var(--en-yellow-light)" },
@@ -682,6 +698,19 @@
         tiers: tiers,
       };
     }
+    // Resource sub-sections + per-resource section assignment (additive; never drops content)
+    if (!Array.isArray(data.resSections) || !data.resSections.length) {
+      data.resSections = RES_SECTIONS.map((s) => ({ ...s }));
+    } else {
+      data.resSections = data.resSections.map((s) => ({ subtitle: "", ...s }));
+    }
+    {
+      const ids = data.resSections.map((s) => s.id);
+      (data.resources || []).forEach((r) => {
+        if (typeof r.section !== "string") { r.section = defaultResSection(r); return; }
+        if (r.section && !ids.includes(r.section)) { r.section = defaultResSection(r); }
+      });
+    }
     return data;
   }
 
@@ -699,15 +728,16 @@
       ...v, id: uid("ver"), deck: "vertical",
       products: v.products.map((p) => ({ ...p, id: uid("p") })),
     }));
-    const resources = RESOURCES.map((r) => ({ ...r, id: uid("res") }));
+    const resources = RESOURCES.map((r) => ({ ...r, id: uid("res"), section: defaultResSection(r) }));
     const sections = SECTIONS.map((s) => ({ ...s, notice: { ...s.notice } }));
-    return { cob, objections, verticals, resources, sections, settings: freshSettings() };
+    const resSections = RES_SECTIONS.map((s) => ({ ...s }));
+    return { cob, objections, verticals, resources, sections, resSections, settings: freshSettings() };
   }
 
   window.__PB_SEED = {
     buildSeed, uid, ensureSections,
     OBJECTION_CATS, VERTICAL_CATS, CAT_TINT,
-    TIER_ORDER, TIER_META, SECTIONS, NOTICE_TONES, SETTINGS,
+    TIER_ORDER, TIER_META, SECTIONS, RES_SECTIONS, NOTICE_TONES, SETTINGS,
     STORE_KEY: "cob_playbook_combined_v1",
   };
 })();

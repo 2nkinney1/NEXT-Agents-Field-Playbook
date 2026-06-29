@@ -25,7 +25,7 @@
   <header style="background:#fff;border-bottom:1px solid var(--en-divider);position:sticky;top:0;z-index:30;">
     <div style="max-width:1100px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;">
       <div style="display:flex;align-items:center;gap:16px;">
-        <img src="assets/logo/ergo-next-mre-horizontal-red.svg" alt="ERGO NEXT" style="height:30px;width:auto;display:block;" />
+        <img src="assets/logo/ergo-next-mre-horizontal-red.svg" alt="ERGO NEXT" style="height:30px;width:auto;display:block;">
         <span style="width:1px;height:32px;background:var(--en-divider);"></span>
         <div style="display:flex;flex-direction:column;line-height:1.15;flex:0 0 auto;">
           <span style="font-weight:700;font-size:18px;color:var(--en-text);white-space:nowrap;">Manage content</span>
@@ -50,12 +50,12 @@
           <h2 style="font-size:20px;font-weight:700;margin:0 0 6px;">Restricted area</h2>
           <p style="color:var(--en-text-muted);font-size:14px;margin:0 0 20px;line-height:1.5;">Enter the access code to add, edit, and reorder everything the field team sees in the playbook.</p>
           <label class="en-label" style="display:block;margin-bottom:6px;">Access code</label>
-          <input value="{{ gateValue }}" onChange="{{ onGateInput }}" type="password" placeholder="••••••" class="en-input" style="width:100%;height:48px;box-sizing:border-box;" />
+          <input value="{{ gateValue }}" onChange="{{ onGateInput }}" type="password" placeholder="••••••" class="en-input" style="width:100%;height:48px;box-sizing:border-box;">
           <sc-if value="{{ gateError }}" hint-placeholder-val="{{ false }}">
             <div class="en-help en-help--error" style="margin-top:6px;">Incorrect code. Try again.</div>
           </sc-if>
           <button type="submit" class="en-btn en-btn--primary en-btn--sm" style="width:100%;margin-top:24px;">Unlock</button>
-          <p style="font-size:12px;color:var(--en-text-faint);margin:16px 0 0;text-align:center;">Demo access code: {{ gateHint }}</p>
+          <p style="font-size:12px;color:var(--en-text-faint);margin:16px 0 0;text-align:center;"><br></p>
         </form>
       </div>
     </sc-if>
@@ -72,7 +72,7 @@
             <button onClick="{{ onExport }}" class="en-btn en-btn--tertiary en-btn--sm"><i class="ti ti-download"></i> Export</button>
             <button onClick="{{ onImportClick }}" class="en-btn en-btn--tertiary en-btn--sm"><i class="ti ti-upload"></i> Import</button>
             <button onClick="{{ onReset }}" class="en-btn en-btn--danger en-btn--sm"><i class="ti ti-refresh"></i> Reset</button>
-            <input ref="{{ fileRef }}" type="file" accept="application/json,.json" style="display:none;" onChange="{{ onImportFile }}" />
+            <input ref="{{ fileRef }}" type="file" accept="application/json,.json" style="display:none;" onChange="{{ onImportFile }}">
           </div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
@@ -85,6 +85,29 @@
             <button onClick="{{ onAddNew }}" class="en-btn en-btn--primary en-btn--sm"><i class="ti ti-plus"></i> {{ addLabel }}</button>
           </sc-if>
         </div>
+        <sc-if value="{{ showResSections }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;overflow:hidden;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;background:var(--en-paper);border-bottom:1px solid var(--en-divider);flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:8px;min-width:0;"><i class="ti ti-folders" style="font-size:18px;color:var(--en-burgundy);flex:0 0 auto;"></i><span style="font-weight:700;font-size:14px;color:var(--en-text);">Sections</span><span style="font-size:12px;color:var(--en-text-subtle);">— headings &amp; “jump to” groups on the Resources tab</span></div>
+              <button onClick="{{ onAddResSection }}" class="en-btn en-btn--secondary en-btn--sm"><i class="ti ti-plus"></i> Add section</button>
+            </div>
+            <sc-for list="{{ resSectionRows }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--en-divider);">
+                <div style="display:flex;flex-direction:column;width:34px;align-items:center;">
+                  <button onClick="{{ s.onUp }}" style="border:0;background:none;cursor:pointer;color:var(--en-text-subtle);padding:0;height:14px;display:grid;place-items:center;"><i class="ti ti-chevron-up" style="font-size:14px;"></i></button>
+                  <button onClick="{{ s.onDown }}" style="border:0;background:none;cursor:pointer;color:var(--en-text-subtle);padding:0;height:14px;display:grid;place-items:center;"><i class="ti ti-chevron-down" style="font-size:14px;"></i></button>
+                </div>
+                <span style="width:24px;font-family:var(--en-font-mono);font-size:12px;color:var(--en-text-faint);">{{ s.idx }}</span>
+                <span style="flex:1;min-width:0;font-weight:700;font-size:14px;color:var(--en-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ s.title }}</span>
+                <span style="width:140px;font-size:12px;color:var(--en-text-muted);">{{ s.count }}</span>
+                <div style="display:flex;gap:6px;width:76px;justify-content:flex-end;">
+                  <button onClick="{{ s.onEdit }}" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--en-divider);background:#fff;color:var(--en-text-muted);cursor:pointer;display:grid;place-items:center;"><i class="ti ti-pencil" style="font-size:15px;"></i></button>
+                  <button onClick="{{ s.onDelete }}" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--en-divider);background:#fff;color:var(--en-text-muted);cursor:pointer;display:grid;place-items:center;"><i class="ti ti-trash" style="font-size:15px;"></i></button>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
         <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
         <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;overflow:hidden;">
           <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--en-paper);border-bottom:1px solid var(--en-divider);font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--en-text-subtle);">
@@ -117,8 +140,8 @@
               <div style="font-weight:700;font-size:16px;color:var(--en-text);">Tool branding</div>
               <div style="font-size:13px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;">The name and the line beneath it, shown in the playbook header.</div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tool name</label><input value="{{ setToolName }}" onChange="{{ onSetToolName }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Field Playbook" /></div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Text below the name</label><input value="{{ setToolTagline }}" onChange="{{ onSetToolTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Agent sales enablement" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tool name</label><input value="{{ setToolName }}" onChange="{{ onSetToolName }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Field Playbook"></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Text below the name</label><input value="{{ setToolTagline }}" onChange="{{ onSetToolTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Agent sales enablement"></div>
 
             <div style="border-top:1px solid var(--en-divider);padding-top:20px;display:flex;flex-direction:column;gap:14px;">
               <div><div style="font-weight:700;font-size:16px;color:var(--en-text);">Coverage tiers</div><div style="font-size:13px;color:var(--en-text-subtle);margin-top:3px;line-height:1.45;max-width:50ch;">The three priority tiers on the COB Trainer — rename each label and the line shown beside it.</div></div>
@@ -126,8 +149,8 @@
                 <div style="background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;">
                   <span class="en-tag {{ t.tagClass }}" style="height:auto;align-self:flex-start;">{{ t.label }}</span>
                   <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:12px;">
-                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Label</label><input value="{{ t.label }}" onChange="{{ t.onLabel }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Need" /></div>
-                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Description beside it</label><input value="{{ t.sub }}" onChange="{{ t.onSub }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Bind before they open the doors" /></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Label</label><input value="{{ t.label }}" onChange="{{ t.onLabel }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Need"></div>
+                    <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Description beside it</label><input value="{{ t.sub }}" onChange="{{ t.onSub }}" class="en-input" style="height:42px;box-sizing:border-box;" placeholder="e.g. Bind before they open the doors"></div>
                   </div>
                 </div>
               </sc-for>
@@ -178,7 +201,7 @@
         <div style="padding:24px 32px;display:flex;flex-direction:column;gap:16px;max-height:64vh;overflow-y:auto;">
 
           <sc-if value="{{ ed.isObjection }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Objection (front)</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Your price is too high" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Objection (front)</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Your price is too high"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Category</label><select value="{{ ed.category }}" onChange="{{ ed.onCategory }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.catOptions }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
@@ -189,12 +212,12 @@
           </sc-if>
 
           <sc-if value="{{ ed.isVertical }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Industry name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. General Contractor" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Industry name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. General Contractor"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Category</label><select value="{{ ed.category }}" onChange="{{ ed.onCategory }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.catOptions }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select></div>
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tagline <span style="font-weight:400;color:var(--en-text-subtle);">— the one-line risk summary</span></label><input value="{{ ed.tagline }}" onChange="{{ ed.onTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Multi-trade crews, job-site exposure" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tagline <span style="font-weight:400;color:var(--en-text-subtle);">— the one-line risk summary</span></label><input value="{{ ed.tagline }}" onChange="{{ ed.onTagline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Multi-trade crews, job-site exposure"></div>
             <div style="display:flex;align-items:center;justify-content:space-between;"><span class="en-label">{{ ed.gapsLabel }}</span><button onClick="{{ ed.onAddProduct }}" class="en-btn en-btn--text"><i class="ti ti-plus"></i> Add gap</button></div>
             <sc-for list="{{ ed.products }}" as="p" hint-placeholder-count="3">
               <div style="border:1px solid var(--en-divider);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--en-paper);">
@@ -206,10 +229,10 @@
                   </div>
                   <button onClick="{{ p.onRemove }}" style="width:26px;height:26px;border-radius:5px;border:1px solid var(--en-divider);background:#fff;cursor:pointer;color:var(--en-red);display:grid;place-items:center;"><i class="ti ti-trash" style="font-size:13px;"></i></button>
                 </div>
-                <input value="{{ p.name }}" onChange="{{ p.onName }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Product / coverage name" />
+                <input value="{{ p.name }}" onChange="{{ p.onName }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Product / coverage name">
                 <textarea value="{{ p.why }}" onChange="{{ p.onWhy }}" class="en-input" style="height:52px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Why they're exposed…"></textarea>
-                <input value="{{ p.pivot }}" onChange="{{ p.onPivot }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Pivot question to ask…" />
-                <input value="{{ p.listen }}" onChange="{{ p.onListen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Listen for… — the cue that signals the gap" />
+                <input value="{{ p.pivot }}" onChange="{{ p.onPivot }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Pivot question to ask…">
+                <input value="{{ p.listen }}" onChange="{{ p.onListen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="Listen for… — the cue that signals the gap">
               </div>
             </sc-for>
           </sc-if>
@@ -219,18 +242,25 @@
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Type</label><select value="{{ ed.resType }}" onChange="{{ ed.onResType }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.typeOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. SMB Coverage Map" /></div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resSubLabel }}</label><input value="{{ ed.subtitle }}" onChange="{{ ed.onSubtitle }}" class="en-input" style="height:44px;box-sizing:border-box;" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Section</label><select value="{{ ed.resSection }}" onChange="{{ ed.onResSection }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.resSectionOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. SMB Coverage Map"></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resSubLabel }}</label><input value="{{ ed.subtitle }}" onChange="{{ ed.onSubtitle }}" class="en-input" style="height:44px;box-sizing:border-box;"></div>
             <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resBodyLabel }}</label><textarea value="{{ ed.body }}" onChange="{{ ed.onBody }}" class="en-input" style="height:90px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea></div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resLinkLabel }}</label><input value="{{ ed.link }}" onChange="{{ ed.onLink }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="https:// or #channel" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">{{ ed.resLinkLabel }}</label><input value="{{ ed.link }}" onChange="{{ ed.onLink }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="https:// or #channel"></div>
+          </sc-if>
+
+          <sc-if value="{{ ed.isResSection }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Section name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Workers' Comp Resources &amp; Guides"></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Subtitle <span style="font-weight:400;color:var(--en-text-subtle);">— small note beside the heading (optional)</span></label><input value="{{ ed.resSecSubtitle }}" onChange="{{ ed.onResSecSubtitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Applies to everyone"></div>
+            <p style="font-size:13px;color:var(--en-text-subtle);line-height:1.5;margin:0;background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:12px 14px;">Resources are assigned to a section from each resource's own editor. Sections you add here appear as headings — and as “Jump to” buttons — on the Resources tab.</p>
           </sc-if>
 
           <sc-if value="{{ ed.isCob }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Class name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Professional & financial services" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Class name</label><input value="{{ ed.title2 }}" onChange="{{ ed.onTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Professional &amp; financial services"></div>
             <div><label class="en-label" style="display:block;margin-bottom:6px;">Business types</label>
               <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
                 <sc-for list="{{ ed.types }}" as="t" hint-placeholder-count="3">
-                  <span style="display:inline-flex;align-items:center;gap:2px;background:var(--en-canvas);border:1px solid var(--en-divider);border-radius:100px;padding:3px 4px 3px 12px;"><input value="{{ t.value }}" onChange="{{ t.onChange }}" style="border:0;background:none;font-family:inherit;font-size:14px;color:var(--en-text);padding:4px 0;width:{{ t.width }};outline:none;" /><button onClick="{{ t.onRemove }}" style="width:24px;height:24px;border-radius:50%;border:0;background:var(--en-divider);cursor:pointer;display:grid;place-items:center;color:var(--en-text-muted);"><i class="ti ti-x" style="font-size:13px;"></i></button></span>
+                  <span style="display:inline-flex;align-items:center;gap:2px;background:var(--en-canvas);border:1px solid var(--en-divider);border-radius:100px;padding:3px 4px 3px 12px;"><input value="{{ t.value }}" onChange="{{ t.onChange }}" style="border:0;background:none;font-family:inherit;font-size:14px;color:var(--en-text);padding:4px 0;width:{{ t.width }};outline:none;"><button onClick="{{ t.onRemove }}" style="width:24px;height:24px;border-radius:50%;border:0;background:var(--en-divider);cursor:pointer;display:grid;place-items:center;color:var(--en-text-muted);"><i class="ti ti-x" style="font-size:13px;"></i></button></span>
                 </sc-for>
                 <button onClick="{{ ed.onAddType }}" class="en-btn en-btn--text" style="height:34px;"><i class="ti ti-plus"></i> Add type</button>
               </div>
@@ -240,10 +270,10 @@
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span class="en-tag {{ tier.tagClass }}" style="height:auto;">{{ tier.label }}</span><span style="font-size:14px;color:var(--en-text-subtle);">{{ tier.countText }}</span></div>
                 <sc-for list="{{ tier.coverages }}" as="cov" hint-placeholder-count="2">
                   <div style="background:var(--en-paper);border:1px solid var(--en-divider);border-radius:8px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px;">
-                    <div style="display:flex;gap:10px;align-items:center;"><input value="{{ cov.name }}" onChange="{{ cov.onName }}" class="en-input" style="height:40px;font-weight:700;flex:1;box-sizing:border-box;" placeholder="Coverage name" /><button onClick="{{ cov.onDelete }}" class="en-btn en-btn--danger en-btn--sm" style="height:36px;padding:0 14px;"><i class="ti ti-trash"></i></button></div>
+                    <div style="display:flex;gap:10px;align-items:center;"><input value="{{ cov.name }}" onChange="{{ cov.onName }}" class="en-input" style="height:40px;font-weight:700;flex:1;box-sizing:border-box;" placeholder="Coverage name"><button onClick="{{ cov.onDelete }}" class="en-btn en-btn--danger en-btn--sm" style="height:36px;padding:0 14px;"><i class="ti ti-trash"></i></button></div>
                     <textarea value="{{ cov.desc }}" onChange="{{ cov.onDesc }}" class="en-input" style="height:64px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="What it does…"></textarea>
                     <textarea value="{{ cov.signal }}" onChange="{{ cov.onSignal }}" class="en-input" style="height:56px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Spot the need · client cue…"></textarea>
-                    <input value="{{ cov.when }}" onChange="{{ cov.onWhen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="When to bring it up" />
+                    <input value="{{ cov.when }}" onChange="{{ cov.onWhen }}" class="en-input" style="height:40px;box-sizing:border-box;" placeholder="When to bring it up">
                     <textarea value="{{ cov.cross }}" onChange="{{ cov.onCross }}" class="en-input" style="height:56px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Cross-sell note…"></textarea>
                     <textarea value="{{ cov.claim }}" onChange="{{ cov.onClaim }}" class="en-input" style="height:64px;padding:10px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="Claims example — a real-world story to help explain this coverage to a customer…"></textarea>
                   </div>
@@ -255,11 +285,11 @@
 
           <sc-if value="{{ ed.isSection }}" hint-placeholder-val="{{ false }}">
             <div style="display:grid;grid-template-columns:1fr 160px;gap:16px;">
-              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tab name</label><input value="{{ ed.secLabel }}" onChange="{{ ed.onSecLabel }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. COB Coverage" /></div>
+              <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tab name</label><input value="{{ ed.secLabel }}" onChange="{{ ed.onSecLabel }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. COB Coverage"></div>
               <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tab icon</label><select value="{{ ed.icon }}" onChange="{{ ed.onIcon }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.iconOptions }}" as="o" hint-placeholder-count="8"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Eyebrow <span style="font-weight:400;color:var(--en-text-subtle);">— small label above the title</span></label><input value="{{ ed.eyebrow2 }}" onChange="{{ ed.onEyebrow }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Class of business · coverage discovery" /></div>
-            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.headline }}" onChange="{{ ed.onHeadline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="The big headline for this tab" /></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Eyebrow <span style="font-weight:400;color:var(--en-text-subtle);">— small label above the title</span></label><input value="{{ ed.eyebrow2 }}" onChange="{{ ed.onEyebrow }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. Class of business · coverage discovery"></div>
+            <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Title</label><input value="{{ ed.headline }}" onChange="{{ ed.onHeadline }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="The big headline for this tab"></div>
             <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Description</label><textarea value="{{ ed.blurb }}" onChange="{{ ed.onBlurb }}" class="en-input" style="height:90px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="The intro paragraph shown under the title…"></textarea></div>
             <div style="border-top:1px solid var(--en-divider);margin-top:4px;padding-top:18px;display:flex;flex-direction:column;gap:16px;">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
@@ -269,7 +299,7 @@
               <sc-if value="{{ ed.noticeOn }}" hint-placeholder-val="{{ false }}">
                 <div style="display:flex;flex-direction:column;gap:16px;background:var(--en-paper);border:1px solid var(--en-divider);border-radius:10px;padding:16px;">
                   <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Tone</label><select value="{{ ed.noticeTone }}" onChange="{{ ed.onNoticeTone }}" class="en-input" style="height:44px;box-sizing:border-box;"><sc-for list="{{ ed.toneOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select></div>
-                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Notice title</label><input value="{{ ed.noticeTitle }}" onChange="{{ ed.onNoticeTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. New Q3 rate sheet is live" /></div>
+                  <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Notice title</label><input value="{{ ed.noticeTitle }}" onChange="{{ ed.onNoticeTitle }}" class="en-input" style="height:44px;box-sizing:border-box;" placeholder="e.g. New Q3 rate sheet is live"></div>
                   <div style="display:flex;flex-direction:column;gap:6px;"><label class="en-label">Notice message</label><textarea value="{{ ed.noticeBody }}" onChange="{{ ed.onNoticeBody }}" class="en-input" style="height:80px;padding:12px 14px;line-height:1.5;resize:vertical;font-family:inherit;box-sizing:border-box;" placeholder="What you want the field team to know…"></textarea></div>
                   <div>
                     <div class="en-label" style="margin-bottom:8px;">Preview</div>
@@ -309,7 +339,7 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;lockManage&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;accessCode&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;000000&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;lockManage&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;accessCode&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Playbook2026!&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   fileRef = React.createRef();
 
@@ -371,7 +401,8 @@ class Component extends DCLogic {
     const uid = this.SEED.uid;
     if (kind === "objection") return { id: uid("obj"), deck: "objection", title: "", icon: "ti-message-circle", category: "Price", root: "", reframe: "", bridge: "" };
     if (kind === "vertical") return { id: uid("ver"), deck: "vertical", title: "", icon: "ti-briefcase", category: "Workers' Comp", tagline: "", products: [{ id: uid("p"), name: "", why: "", pivot: "", listen: "" }] };
-    if (kind === "resource") return { id: uid("res"), type: "doc", icon: "ti-file", title: "", subtitle: "", body: "", link: "#" };
+    if (kind === "resource") return { id: uid("res"), type: "doc", icon: "ti-file", title: "", subtitle: "", body: "", link: "#", section: (this.state.data.resSections && this.state.data.resSections[0] && this.state.data.resSections[0].id) || "" };
+    if (kind === "ressection") return { id: uid("ressec"), title: "", subtitle: "" };
     return { id: uid("cob"), icon: "ti-briefcase", accent: "#8e0038", bg: "var(--en-rose-50)", title: "", types: ["New type"], policies: { must: [], rec: [], opt: [] } };
   }
   _openEdit(kind, item) { this.setState({ editor: { kind, isNew: false, draft: JSON.parse(JSON.stringify(item)) } }); }
@@ -382,7 +413,7 @@ class Component extends DCLogic {
     const d = e.draft;
     const nameField = e.kind === "section" ? "label" : "title";
     if (!d[nameField] || !d[nameField].trim()) return;
-    const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob", section: "sections" };
+    const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob", section: "sections", ressection: "resSections" };
     const key = map[e.kind];
     const data = { ...this.state.data };
     const arr = [...data[key]];
@@ -434,7 +465,7 @@ class Component extends DCLogic {
   renderVals() {
     const st = this.state;
     const lock = this.props.lockManage !== false;
-    const code = this.props.accessCode || "000000";
+    const code = this.props.accessCode || "Playbook2026!";
 
     if (!st.ready || !st.data) {
       return { notReady: true, showGate: false, showManage: false, editorOpen: false, confirmOpen: false };
@@ -462,15 +493,15 @@ class Component extends DCLogic {
       { id: "settings", label: "General", icon: "ti-settings", n: "" },
     ];
     const manageSegs = segDefs.map((s) => ({ ...s, style: segBase + (md === s.id ? segOn : segOff), onClick: () => this.setState({ manageDeck: s.id }) }));
-    const dmap = { cob: "cob", vertical: "verticals", objection: "objections", resource: "resources", section: "sections" };
+    const dmap = { cob: "cob", vertical: "verticals", objection: "objections", resource: "resources", ressection: "resSections", section: "sections" };
     const key = dmap[md];
     const list = st.data[key] || [];
     const showSettings = md === "settings";
     const showList = !showSettings;
     const canAdd = md !== "section" && md !== "settings";
-    const addLabel = { cob: "Add class", vertical: "Add vertical", objection: "Add objection", resource: "Add resource", section: "", settings: "" }[md];
-    const colTitle = { cob: "Class", vertical: "Industry", objection: "Objection", resource: "Resource", section: "Tab", settings: "" }[md];
-    const colSub = { cob: "Coverages", vertical: "Category", objection: "Category", resource: "Type", section: "Notice", settings: "" }[md];
+    const addLabel = { cob: "Add class", vertical: "Add vertical", objection: "Add objection", resource: "Add resource", ressection: "Add section", section: "", settings: "" }[md];
+    const colTitle = { cob: "Class", vertical: "Industry", objection: "Objection", resource: "Resource", ressection: "Section", section: "Tab", settings: "" }[md];
+    const colSub = { cob: "Coverages", vertical: "Category", objection: "Category", resource: "Type", ressection: "Resources", section: "Notice", settings: "" }[md];
     const typeLabels = { doc: "Document / link", sheet: "Cheat sheet", contact: "Contact" };
     const manageRows = showList ? list.map((it, i) => {
       let title, sub;
@@ -478,24 +509,38 @@ class Component extends DCLogic {
       else if (md === "vertical") { title = it.title; sub = it.category; }
       else if (md === "objection") { title = "“" + it.title + "”"; sub = it.category; }
       else if (md === "section") { title = it.label; sub = (it.notice && it.notice.on) ? "Pop-up notice on" : "No notice"; }
+      else if (md === "ressection") { title = it.title; const cnt = (st.data.resources || []).filter((r) => r.section === it.id).length; sub = cnt + " resource" + (cnt === 1 ? "" : "s"); }
       else { title = it.title; sub = typeLabels[it.type] || it.type; }
       return {
-        id: it.id, idx: i + 1, icon: it.icon || "ti-file", title, sub, showDelete: md !== "section",
+        id: it.id, idx: i + 1, icon: it.icon || (md === "ressection" ? "ti-folder" : "ti-file"), title, sub, showDelete: md !== "section",
         onUp: () => this._move(key, i, -1), onDown: () => this._move(key, i, 1),
         onEdit: () => this._openEdit(md, it),
         onDelete: () => this.setState({ confirm: { kind: "delete", key, id: it.id } }),
       };
     }) : [];
 
+    /* Resource sub-sections — managed inline within the Resources tab */
+    const showResSections = md === "resource";
+    const resSectionRows = (st.data.resSections || []).map((s, i) => {
+      const cnt = (st.data.resources || []).filter((r) => r.section === s.id).length;
+      return {
+        id: s.id, idx: i + 1, title: s.title, count: cnt + " resource" + (cnt === 1 ? "" : "s"),
+        onUp: () => this._move("resSections", i, -1), onDown: () => this._move("resSections", i, 1),
+        onEdit: () => this._openEdit("ressection", s),
+        onDelete: () => this.setState({ confirm: { kind: "delete", key: "resSections", id: s.id } }),
+      };
+    });
+    const onAddResSection = () => this._openAdd("ressection");
+
     let ed = null;
     const editorOpen = !!st.editor;
     if (st.editor) {
       const e = st.editor, d = e.draft;
       const setF = (f, v) => this._edDraft((dd) => { dd[f] = v; });
-      const titles = { objection: "Objection card", vertical: "Vertical-risk card", resource: "Resource", cob: "COB class", section: "Tab & section" };
-      const titlesLower = { objection: "objection card", vertical: "vertical-risk card", resource: "resource", cob: "COB class", section: "tab & section" };
+      const titles = { objection: "Objection card", vertical: "Vertical-risk card", resource: "Resource", cob: "COB class", section: "Tab & section", ressection: "Resource section" };
+      const titlesLower = { objection: "objection card", vertical: "vertical-risk card", resource: "resource", cob: "COB class", section: "tab & section", ressection: "resource section" };
       ed = {
-        isObjection: e.kind === "objection", isVertical: e.kind === "vertical", isResource: e.kind === "resource", isCob: e.kind === "cob", isSection: e.kind === "section",
+        isObjection: e.kind === "objection", isVertical: e.kind === "vertical", isResource: e.kind === "resource", isCob: e.kind === "cob", isSection: e.kind === "section", isResSection: e.kind === "ressection",
         eyebrow: titles[e.kind], title: (e.isNew ? "Add " : "Edit ") + titlesLower[e.kind],
         showDelete: !e.isNew, saveLabel: e.isNew ? "Add" : "Save changes",
         title2: d.title, onTitle: (ev) => setF("title", ev.target.value),
@@ -535,6 +580,12 @@ class Component extends DCLogic {
         ed.resSubLabel = d.type === "contact" ? "Role" : "Description";
         ed.resBodyLabel = d.type === "sheet" ? "Sheet body" : (d.type === "contact" ? "When to reach them" : "Notes (optional)");
         ed.resLinkLabel = d.type === "contact" ? "Contact / channel" : "Link URL";
+        const firstSec = (st.data.resSections && st.data.resSections[0] && st.data.resSections[0].id) || "";
+        ed.resSection = d.section || firstSec; ed.onResSection = (ev) => setF("section", ev.target.value);
+        ed.resSectionOptions = (st.data.resSections || []).map((s) => ({ value: s.id, label: s.title }));
+      }
+      if (e.kind === "ressection") {
+        ed.resSecSubtitle = d.subtitle || ""; ed.onResSecSubtitle = (ev) => setF("subtitle", ev.target.value);
       }
       if (e.kind === "section") {
         ed.secLabel = d.label; ed.onSecLabel = (ev) => setF("label", ev.target.value);
@@ -611,6 +662,7 @@ class Component extends DCLogic {
       onGateInput: (ev) => this.setState({ gateValue: ev.target.value, gateError: false }),
       onGateSubmit: (ev) => { ev.preventDefault(); if (st.gateValue === code) this.setState({ gate: true, gateValue: "", gateError: false }); else this.setState({ gateError: true, gateValue: "" }); },
       manageSegs, manageRows, addLabel, colTitle, colSub, canAdd, showList, showSettings,
+      showResSections, resSectionRows, onAddResSection,
       setToolName: sd.toolName, onSetToolName: (ev) => this._setDraft((d) => { d.toolName = ev.target.value; }),
       setToolTagline: sd.toolTagline, onSetToolTagline: (ev) => this._setDraft((d) => { d.toolTagline = ev.target.value; }),
       setBannerOn: !!sBn.on,
@@ -629,7 +681,7 @@ class Component extends DCLogic {
       editorOpen, ed,
       onEdClose: () => this.setState({ editor: null }),
       onEdSave: () => this._saveEditor(),
-      onEdDelete: () => { const e = st.editor; const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob" }; this.setState({ confirm: { kind: "delete", key: map[e.kind], id: e.draft.id, fromEditor: true } }); },
+      onEdDelete: () => { const e = st.editor; const map = { objection: "objections", vertical: "verticals", resource: "resources", cob: "cob", ressection: "resSections", section: "sections" }; this.setState({ confirm: { kind: "delete", key: map[e.kind], id: e.draft.id, fromEditor: true } }); },
       onScrimClick: (ev) => { if (ev.target === ev.currentTarget) this.setState({ editor: null }); },
       confirmOpen, conf,
       onConfScrim: (ev) => { if (ev.target === ev.currentTarget) this.setState({ confirm: null }); },

@@ -273,44 +273,49 @@
           <h1 style="font-size:32px;font-weight:700;margin:0 0 10px;letter-spacing:-.01em;line-height:1.15;">{{ resHdr.headline }}</h1>
           <p style="color:var(--en-text-muted);max-width:64ch;font-size:16px;line-height:1.5;margin:0;">{{ resHdr.blurb }}</p>
         </div>
-        <section>
-          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Guides &amp; documents</h2>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
-            <sc-for list="{{ resDocs }}" as="d" hint-placeholder-count="5">
-              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:12px;">
-                <div style="display:flex;align-items:center;gap:12px;"><span style="width:44px;height:44px;border-radius:10px;background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ d.icon }}" style="font-size:22px;"></i></span><div style="font-weight:700;font-size:16px;color:var(--en-text);line-height:1.3;">{{ d.title }}</div></div>
-                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.45;margin:0;flex:1;">{{ d.subtitle }}</p>
-                <a href="{{ d.link }}" target="_blank" rel="noopener noreferrer" class="en-btn en-btn--secondary en-btn--sm" style="align-self:flex-start;text-decoration:none;"><i class="ti ti-external-link"></i> Open</a>
-              </div>
-            </sc-for>
+        <sc-if value="{{ resHasJump }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 18px;background:#fff;border:1px solid var(--en-divider);border-radius:12px;">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--en-text-subtle);">Jump to</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <sc-for list="{{ resJump }}" as="j" hint-placeholder-count="3">
+                <button onClick="{{ j.onClick }}" style="display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:100px;background:var(--en-canvas);border:1px solid var(--en-border);color:var(--en-text-muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .12s;" style-hover="border-color:var(--en-burgundy);color:var(--en-burgundy);">{{ j.title }} <span style="font-size:11px;opacity:.65;font-variant-numeric:tabular-nums;">{{ j.n }}</span></button>
+              </sc-for>
+            </div>
           </div>
-        </section>
-        <section>
-          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Quick-reference cheat sheets</h2>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;">
-            <sc-for list="{{ resSheets }}" as="s" hint-placeholder-count="3">
-              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><span style="width:36px;height:36px;border-radius:8px;background:var(--en-paper);border:1px solid var(--en-divider);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ s.icon }}" style="font-size:18px;"></i></span><div style="font-weight:700;font-size:16px;color:var(--en-text);">{{ s.title }}</div></div>
-                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.6;margin:0;">{{ s.body }}</p>
-                <sc-if value="{{ s.hasLink }}" hint-placeholder-val="{{ false }}">
-                  <a href="{{ s.link }}" target="_blank" rel="noopener noreferrer" class="en-btn en-btn--secondary en-btn--sm" style="text-decoration:none;margin-top:14px;"><i class="ti ti-external-link"></i> Open</a>
-                </sc-if>
-              </div>
-            </sc-for>
-          </div>
-        </section>
-        <section>
-          <h2 style="font-size:20px;font-weight:700;margin:0 0 16px;">Contacts &amp; escalation</h2>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:20px;">
-            <sc-for list="{{ resContacts }}" as="c" hint-placeholder-count="4">
-              <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;align-items:center;gap:12px;"><span style="width:44px;height:44px;border-radius:50%;background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ c.icon }}" style="font-size:22px;"></i></span><div><div style="font-weight:700;font-size:16px;color:var(--en-text);line-height:1.2;">{{ c.title }}</div><div style="font-size:12px;color:var(--en-text-subtle);">{{ c.subtitle }}</div></div></div>
-                <p style="font-size:14px;color:var(--en-text-muted);line-height:1.45;margin:0;">{{ c.body }}</p>
-                <div style="margin-top:6px;font-weight:700;font-size:14px;color:var(--en-burgundy);font-family:var(--en-font-mono);">{{ c.link }}</div>
-              </div>
-            </sc-for>
-          </div>
-        </section>
+        </sc-if>
+        <sc-for list="{{ resGroups }}" as="g" hint-placeholder-count="3">
+          <section id="{{ g.domId }}" style="scroll-margin-top:96px;">
+            <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+              <h2 style="font-size:20px;font-weight:700;margin:0;">{{ g.title }}</h2>
+              <sc-if value="{{ g.hasSubtitle }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:var(--en-text-subtle);">{{ g.subtitle }}</span></sc-if>
+            </div>
+            <sc-if value="{{ g.empty }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px;text-align:center;color:var(--en-text-subtle);background:#fff;border:1px dashed var(--en-border);border-radius:15px;font-size:14px;">Nothing here yet — add resources to this section in Manage content.</div>
+            </sc-if>
+            <sc-if value="{{ g.hasItems }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+              <sc-for list="{{ g.items }}" as="d" hint-placeholder-count="4">
+                <div style="background:#fff;border:1px solid var(--en-divider);border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:12px;">
+                  <div style="display:flex;align-items:center;gap:12px;">
+                    <span style="width:44px;height:44px;border-radius:{{ d.iconRadius }};background:var(--en-rose-50);color:var(--en-burgundy);display:grid;place-items:center;flex:0 0 auto;"><i class="ti {{ d.icon }}" style="font-size:22px;"></i></span>
+                    <div style="min-width:0;">
+                      <div style="font-weight:700;font-size:16px;color:var(--en-text);line-height:1.3;">{{ d.title }}</div>
+                      <sc-if value="{{ d.hasRole }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px;color:var(--en-text-subtle);">{{ d.role }}</div></sc-if>
+                    </div>
+                  </div>
+                  <sc-if value="{{ d.hasBody }}" hint-placeholder-val="{{ false }}"><p style="font-size:14px;color:var(--en-text-muted);line-height:1.55;margin:0;flex:1;">{{ d.body }}</p></sc-if>
+                  <sc-if value="{{ d.isLinkBtn }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ d.link }}" target="_blank" rel="noopener noreferrer" class="en-btn en-btn--secondary en-btn--sm" style="align-self:flex-start;text-decoration:none;margin-top:auto;"><i class="ti ti-external-link"></i> Open</a>
+                  </sc-if>
+                  <sc-if value="{{ d.showContactLink }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:auto;font-weight:700;font-size:14px;color:var(--en-burgundy);font-family:var(--en-font-mono);">{{ d.link }}</div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+            </sc-if>
+          </section>
+        </sc-for>
       </div>
     </sc-if>
 
@@ -590,8 +595,33 @@ class Component extends DCLogic {
     const vDeck = buildDeck("vertical");
     const oDeck = buildDeck("objection");
 
-    /* resources */
+    /* resources — grouped into user-managed sub-sections, with jump-to nav */
     const res = st.data.resources;
+    const resSecDefs = (st.data.resSections && st.data.resSections.length) ? st.data.resSections : (SEED.RES_SECTIONS || []);
+    const mapResCard = (r) => {
+      const isDoc = r.type === "doc", isContact = r.type === "contact";
+      const body = isDoc ? r.subtitle : r.body;
+      const linkOk = !!(r.link && String(r.link).trim());
+      return {
+        id: r.id, icon: r.icon || "ti-file",
+        iconRadius: isContact ? "50%" : "10px",
+        title: r.title,
+        hasRole: isContact && !!(r.subtitle && r.subtitle.trim()), role: r.subtitle || "",
+        hasBody: !!(body && String(body).trim()), body: body || "",
+        isLinkBtn: !isContact && linkOk && String(r.link).trim() !== "#",
+        showContactLink: isContact && linkOk,
+        link: r.link || "",
+      };
+    };
+    const resGroups = resSecDefs.map((s) => {
+      const items = res.filter((r) => r.section === s.id).map(mapResCard);
+      return { id: s.id, domId: "ressec-" + s.id, title: s.title, subtitle: s.subtitle || "", hasSubtitle: !!(s.subtitle && String(s.subtitle).trim()), empty: items.length === 0, hasItems: items.length > 0, items };
+    });
+    const resJump = resGroups.map((g) => ({
+      title: g.title, n: g.items.length,
+      onClick: () => { const el = document.getElementById(g.domId); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96, behavior: "smooth" }); },
+    }));
+    const resHasJump = resGroups.length > 1;
 
     /* manage */
     const segBase = "display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border:0;cursor:pointer;border-radius:100px;font-family:inherit;font-size:14px;font-weight:700;transition:all .12s;";
@@ -720,7 +750,7 @@ class Component extends DCLogic {
       cobHdr, vHdr, oHdr, resHdr, noticeOpen, notice,
       vChips: vDeck.chips, vCards: vDeck.cards, vEmpty: vDeck.empty, vSearch: st.vSearch, onVSearch: (ev) => this.setState({ vSearch: ev.target.value }),
       oChips: oDeck.chips, oCards: oDeck.cards, oEmpty: oDeck.empty, oSearch: st.oSearch, onOSearch: (ev) => this.setState({ oSearch: ev.target.value }),
-      resDocs: res.filter((r) => r.type === "doc"), resSheets: res.filter((r) => r.type === "sheet").map((s) => ({ ...s, hasLink: !!(s.link && s.link.trim() && s.link.trim() !== "#") })), resContacts: res.filter((r) => r.type === "contact"),
+      resGroups, resJump, resHasJump,
       gateValue: st.gateValue, gateError: st.gateError, gateHint: code,
       onGateInput: (ev) => this.setState({ gateValue: ev.target.value, gateError: false }),
       onGateSubmit: (ev) => { ev.preventDefault(); if (st.gateValue === code) this.setState({ gate: true, gateValue: "", gateError: false }); else this.setState({ gateError: true, gateValue: "" }); },
