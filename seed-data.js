@@ -660,7 +660,7 @@
     // are owned by the playbook, not the user, so refresh them from seed when
     // the content version is stale — WITHOUT touching the user's resources,
     // settings/branding, objections, or section copy, which must persist.
-    var SEED_CONTENT_VER = 3;
+    var SEED_CONTENT_VER = 4;
     if (data._contentVer !== SEED_CONTENT_VER) {
       var freshSeed = buildSeed();
       data.cob = freshSeed.cob;
