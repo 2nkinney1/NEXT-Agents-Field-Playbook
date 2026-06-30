@@ -465,7 +465,7 @@ class Component extends DCLogic {
   renderVals() {
     const st = this.state;
     const lock = this.props.lockManage !== false;
-    const code = this.props.accessCode || "000000";
+    const code = this.props.accessCode || "Playbook2026!";
 
     if (!st.ready || !st.data) {
       return { notReady: true, showGate: false, showManage: false, editorOpen: false, confirmOpen: false };
